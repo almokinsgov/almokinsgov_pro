@@ -8,7 +8,7 @@
   "extensionsEnabled": true,
   "pluginConfig": {
     "rwas-map-view": {
-      "enabled": false,
+      "enabled": true,
       "defaultMode": "map",
       "transformPopup": true,
       "mapHeight": 390,
@@ -87,7 +87,7 @@
       "includeExpired": true
     },
     "rwas-admin-ui": {
-      "enabled": false,
+      "enabled": true,
       "renderButton": true,
       "slotName": "popup-footer",
       "panelTitle": "RWAS Admin",
