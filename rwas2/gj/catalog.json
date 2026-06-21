@@ -1,0 +1,344 @@
+{
+  "catalogVersion": 1,
+  "source": "New Zealand territorial authority GeoJSON files",
+  "sourceCrs": "EPSG:2193",
+  "targetCrs": "EPSG:4326",
+  "areaCount": 67,
+  "areas": [
+    {
+      "name": "Ashburton District",
+      "file": "Ashburton District.geojson",
+      "url": "./Ashburton%20District.geojson"
+    },
+    {
+      "name": "Auckland",
+      "file": "Auckland.geojson",
+      "url": "./Auckland.geojson"
+    },
+    {
+      "name": "Buller District",
+      "file": "Buller District.geojson",
+      "url": "./Buller%20District.geojson"
+    },
+    {
+      "name": "Carterton District",
+      "file": "Carterton District.geojson",
+      "url": "./Carterton%20District.geojson"
+    },
+    {
+      "name": "Central Hawke's Bay District",
+      "file": "Central Hawke's Bay District.geojson",
+      "url": "./Central%20Hawke's%20Bay%20District.geojson"
+    },
+    {
+      "name": "Central Otago District",
+      "file": "Central Otago District.geojson",
+      "url": "./Central%20Otago%20District.geojson"
+    },
+    {
+      "name": "Chatham Islands Territory",
+      "file": "Chatham Islands Territory.geojson",
+      "url": "./Chatham%20Islands%20Territory.geojson"
+    },
+    {
+      "name": "Christchurch City",
+      "file": "Christchurch City.geojson",
+      "url": "./Christchurch%20City.geojson"
+    },
+    {
+      "name": "Clutha District",
+      "file": "Clutha District.geojson",
+      "url": "./Clutha%20District.geojson"
+    },
+    {
+      "name": "Dunedin City",
+      "file": "Dunedin City.geojson",
+      "url": "./Dunedin%20City.geojson"
+    },
+    {
+      "name": "Far North District",
+      "file": "Far North District.geojson",
+      "url": "./Far%20North%20District.geojson"
+    },
+    {
+      "name": "Gisborne District",
+      "file": "Gisborne District.geojson",
+      "url": "./Gisborne%20District.geojson"
+    },
+    {
+      "name": "Gore District",
+      "file": "Gore District.geojson",
+      "url": "./Gore%20District.geojson"
+    },
+    {
+      "name": "Grey District",
+      "file": "Grey District.geojson",
+      "url": "./Grey%20District.geojson"
+    },
+    {
+      "name": "Hamilton City",
+      "file": "Hamilton City.geojson",
+      "url": "./Hamilton%20City.geojson"
+    },
+    {
+      "name": "Hastings District",
+      "file": "Hastings District.geojson",
+      "url": "./Hastings%20District.geojson"
+    },
+    {
+      "name": "Hauraki District",
+      "file": "Hauraki District.geojson",
+      "url": "./Hauraki%20District.geojson"
+    },
+    {
+      "name": "Horowhenua District",
+      "file": "Horowhenua District.geojson",
+      "url": "./Horowhenua%20District.geojson"
+    },
+    {
+      "name": "Hurunui District",
+      "file": "Hurunui District.geojson",
+      "url": "./Hurunui%20District.geojson"
+    },
+    {
+      "name": "Invercargill City",
+      "file": "Invercargill City.geojson",
+      "url": "./Invercargill%20City.geojson"
+    },
+    {
+      "name": "Kaikoura District",
+      "file": "Kaikoura District.geojson",
+      "url": "./Kaikoura%20District.geojson"
+    },
+    {
+      "name": "Kaipara District",
+      "file": "Kaipara District.geojson",
+      "url": "./Kaipara%20District.geojson"
+    },
+    {
+      "name": "Kapiti Coast District",
+      "file": "Kapiti Coast District.geojson",
+      "url": "./Kapiti%20Coast%20District.geojson"
+    },
+    {
+      "name": "Kawerau District",
+      "file": "Kawerau District.geojson",
+      "url": "./Kawerau%20District.geojson"
+    },
+    {
+      "name": "Lower Hutt City",
+      "file": "Lower Hutt City.geojson",
+      "url": "./Lower%20Hutt%20City.geojson"
+    },
+    {
+      "name": "Mackenzie District",
+      "file": "Mackenzie District.geojson",
+      "url": "./Mackenzie%20District.geojson"
+    },
+    {
+      "name": "Manawatu District",
+      "file": "Manawatu District.geojson",
+      "url": "./Manawatu%20District.geojson"
+    },
+    {
+      "name": "Marlborough District",
+      "file": "Marlborough District.geojson",
+      "url": "./Marlborough%20District.geojson"
+    },
+    {
+      "name": "Masterton District",
+      "file": "Masterton District.geojson",
+      "url": "./Masterton%20District.geojson"
+    },
+    {
+      "name": "Matamata-Piako District",
+      "file": "Matamata-Piako District.geojson",
+      "url": "./Matamata-Piako%20District.geojson"
+    },
+    {
+      "name": "Napier City",
+      "file": "Napier City.geojson",
+      "url": "./Napier%20City.geojson"
+    },
+    {
+      "name": "Nelson City",
+      "file": "Nelson City.geojson",
+      "url": "./Nelson%20City.geojson"
+    },
+    {
+      "name": "New Plymouth District",
+      "file": "New Plymouth District.geojson",
+      "url": "./New%20Plymouth%20District.geojson"
+    },
+    {
+      "name": "Ōpōtiki District",
+      "file": "Opotiki District.geojson",
+      "url": "./Opotiki%20District.geojson"
+    },
+    {
+      "name": "Ōtorohanga District",
+      "file": "Otorohanga District.geojson",
+      "url": "./Otorohanga%20District.geojson"
+    },
+    {
+      "name": "Palmerston North City",
+      "file": "Palmerston North City.geojson",
+      "url": "./Palmerston%20North%20City.geojson"
+    },
+    {
+      "name": "Porirua City",
+      "file": "Porirua City.geojson",
+      "url": "./Porirua%20City.geojson"
+    },
+    {
+      "name": "Queenstown-Lakes District",
+      "file": "Queenstown-Lakes District.geojson",
+      "url": "./Queenstown-Lakes%20District.geojson"
+    },
+    {
+      "name": "Rangitikei District",
+      "file": "Rangitikei District.geojson",
+      "url": "./Rangitikei%20District.geojson"
+    },
+    {
+      "name": "Rotorua District",
+      "file": "Rotorua District.geojson",
+      "url": "./Rotorua%20District.geojson"
+    },
+    {
+      "name": "Ruapehu District",
+      "file": "Ruapehu District.geojson",
+      "url": "./Ruapehu%20District.geojson"
+    },
+    {
+      "name": "Selwyn District",
+      "file": "Selwyn District.geojson",
+      "url": "./Selwyn%20District.geojson"
+    },
+    {
+      "name": "South Taranaki District",
+      "file": "South Taranaki District.geojson",
+      "url": "./South%20Taranaki%20District.geojson"
+    },
+    {
+      "name": "South Waikato District",
+      "file": "South Waikato District.geojson",
+      "url": "./South%20Waikato%20District.geojson"
+    },
+    {
+      "name": "South Wairarapa District",
+      "file": "South Wairarapa District.geojson",
+      "url": "./South%20Wairarapa%20District.geojson"
+    },
+    {
+      "name": "Southland District",
+      "file": "Southland District.geojson",
+      "url": "./Southland%20District.geojson"
+    },
+    {
+      "name": "Stratford District",
+      "file": "Stratford District.geojson",
+      "url": "./Stratford%20District.geojson"
+    },
+    {
+      "name": "Tararua District",
+      "file": "Tararua District.geojson",
+      "url": "./Tararua%20District.geojson"
+    },
+    {
+      "name": "Tasman District",
+      "file": "Tasman District.geojson",
+      "url": "./Tasman%20District.geojson"
+    },
+    {
+      "name": "Taupo District",
+      "file": "Taupo District.geojson",
+      "url": "./Taupo%20District.geojson"
+    },
+    {
+      "name": "Tauranga City",
+      "file": "Tauranga City.geojson",
+      "url": "./Tauranga%20City.geojson"
+    },
+    {
+      "name": "Thames-Coromandel District",
+      "file": "Thames-Coromandel District.geojson",
+      "url": "./Thames-Coromandel%20District.geojson"
+    },
+    {
+      "name": "Timaru District",
+      "file": "Timaru District.geojson",
+      "url": "./Timaru%20District.geojson"
+    },
+    {
+      "name": "Upper Hutt City",
+      "file": "Upper Hutt City.geojson",
+      "url": "./Upper%20Hutt%20City.geojson"
+    },
+    {
+      "name": "Waikato District",
+      "file": "Waikato District.geojson",
+      "url": "./Waikato%20District.geojson"
+    },
+    {
+      "name": "Waimakariri District",
+      "file": "Waimakariri District.geojson",
+      "url": "./Waimakariri%20District.geojson"
+    },
+    {
+      "name": "Waimate District",
+      "file": "Waimate District.geojson",
+      "url": "./Waimate%20District.geojson"
+    },
+    {
+      "name": "Waipa District",
+      "file": "Waipa District.geojson",
+      "url": "./Waipa%20District.geojson"
+    },
+    {
+      "name": "Wairoa District",
+      "file": "Wairoa District.geojson",
+      "url": "./Wairoa%20District.geojson"
+    },
+    {
+      "name": "Waitaki District",
+      "file": "Waitaki District.geojson",
+      "url": "./Waitaki%20District.geojson"
+    },
+    {
+      "name": "Waitomo District",
+      "file": "Waitomo District.geojson",
+      "url": "./Waitomo%20District.geojson"
+    },
+    {
+      "name": "Wellington City",
+      "file": "Wellington City.geojson",
+      "url": "./Wellington%20City.geojson"
+    },
+    {
+      "name": "Western Bay of Plenty District",
+      "file": "Western Bay of Plenty District.geojson",
+      "url": "./Western%20Bay%20of%20Plenty%20District.geojson"
+    },
+    {
+      "name": "Westland District",
+      "file": "Westland District.geojson",
+      "url": "./Westland%20District.geojson"
+    },
+    {
+      "name": "Whakatane District",
+      "file": "Whakatane District.geojson",
+      "url": "./Whakatane%20District.geojson"
+    },
+    {
+      "name": "Whanganui District",
+      "file": "Whanganui District.geojson",
+      "url": "./Whanganui%20District.geojson"
+    },
+    {
+      "name": "Whangarei District",
+      "file": "Whangarei District.geojson",
+      "url": "./Whangarei%20District.geojson"
+    }
+  ]
+}
