@@ -225,7 +225,7 @@
   "showCancelledEmergencyMobileAlerts": true,
   "useProxy": true,
   "proxyEnabled": true,
-  "proxy": "https://corsproxy.io/?",
+  "proxy": "https://proxy.corsfix.com/?",
   "showExpiredAlerts": true,
   "requireOnsetWithinWindow": false,
   "hourWindow": 24,
