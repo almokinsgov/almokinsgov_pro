@@ -121,7 +121,7 @@
       "maxItems": 0,
       "sortLocale": "en-NZ",
       "useBboxPrefilter": true,
-      "useProxy": false,
+      "useProxy": true,
       "cacheMode": "default",
       "fetchTimeoutMs": 30000
     },
@@ -136,7 +136,7 @@
       "maxItems": 0,
       "sortLocale": "en-NZ",
       "useBboxPrefilter": true,
-      "useProxy": false,
+      "useProxy": true,
       "cacheMode": "default",
       "fetchTimeoutMs": 30000
     },
@@ -149,7 +149,7 @@
         "roadworks",
         "hazards"
       ],
-      "useProxy": false,
+      "useProxy": true,
       "proxy": "",
       "fetchTimeoutMs": 30000,
       "cacheMode": "no-store",
@@ -192,15 +192,15 @@
     "warnings",
     "hazards"
   ],
-  "nztaUseProxy": false,
+  "nztaUseProxy": true,
   "enableMetServiceAlerts": true,
-  "metServiceUseProxy": false,
+  "metServiceUseProxy": true,
   "metServiceSourceUrl": "https://alerts.metservice.com/cap/atom",
   "metServiceAtomUrl": "https://alerts.metservice.com/cap/atom",
   "metServiceDetailMode": "auto",
   "metServiceFeeds": [],
   "enableCivilDefenceAlerts": true,
-  "civilDefenceUseProxy": false,
+  "civilDefenceUseProxy": true,
   "civilDefenceAtomUrl": "https://www.civildefence.govt.nz/home/rss",
   "civilDefenceAtomFeedUrl": "https://www.civildefence.govt.nz/home/rss",
   "civilDefenceFeeds": [
@@ -211,7 +211,7 @@
       "sourceLabel": "Civil Defence Atom",
       "badgeText": "Civil Defence Atom",
       "showCancelled": true,
-      "useProxy": false,
+      "useProxy": true,
       "defaultLink": "https://www.civildefence.govt.nz/",
       "linkLabel": "civildefence.govt.nz"
     }
@@ -223,9 +223,9 @@
   "emergencyMobileAlertFeedUrl": "",
   "emergencyMobileAlertFeeds": [],
   "showCancelledEmergencyMobileAlerts": true,
-  "useProxy": false,
-  "proxyEnabled": false,
-  "proxy": "http://127.0.0.1:8787/api/proxy?url=",
+  "useProxy": true,
+  "proxyEnabled": true,
+  "proxy": "https://corsproxy.io/?",
   "showExpiredAlerts": true,
   "requireOnsetWithinWindow": false,
   "hourWindow": 24,
