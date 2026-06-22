@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Civil Defence RSS Feed</title>
+		<link>https://www.civildefence.govt.nz/home/rss</link>
+		<atom:link href="https://www.civildefence.govt.nz/home/rss" rel="self" type="application/rss+xml" />
+		<description>This is the official RSS Feed of the National Civil Defence website.</description>
+
+		
+		<item>
+			<title>Large Pacific Earthquake Being Assessed</title>
+			<link>https://www.civildefence.govt.nz/emergency-events/active-emergencies/large-pacific-earthquake-being-assessed</link>
+			
+			<pubDate>Mon, 08 Jun 2026 12:00:32 +1200</pubDate>
+			
+			<guid>https://www.civildefence.govt.nz/emergency-events/active-emergencies/large-pacific-earthquake-being-assessed</guid>
+		</item>
+		
+	</channel>
+</rss>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>New Zealand Emergency Mobile Alert feed</title>
+  <link rel="self" href="https://alerthub.civildefence.govt.nz/atom/pwp" />
+  <subtitle>A feed of current or recent Emergency Mobile Alerts issued in New Zealand.</subtitle>
+  <id>https://alerthub.civildefence.govt.nz/atom/pwp</id>
+  <updated>2026-06-14T06:19:17Z</updated>
+  <entry>
+    <title>Nationwide Test 2026</title>
+    <link rel="alternate" href="https://alerthub.civildefence.govt.nz/messages/cap/Mi40OS4wLjAuNTU0LjIuNDg2LjQ4Ng" />
+    <author>
+      <name>New Zealand Emergency Mobile Alert</name>
+      <email>emergency.management@nema.govt.nz</email>
+    </author>
+    <id>https://alerthub.civildefence.govt.nz/messages/cap/2.49.0.0.554.2.486.486#0</id>
+    <updated>2026-06-14T06:17:56Z</updated>
+    <published>2026-06-14T06:17:56Z</published>
+    <content>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;alert xmlns="urn:oasis:names:tc:emergency:cap:1.2"&gt;&lt;identifier&gt;2.49.0.0.554.2.486.486&lt;/identifier&gt;&lt;sender&gt;emergency.management@nema.govt.nz&lt;/sender&gt;&lt;sent&gt;2026-06-14T06:17:56-00:00&lt;/sent&gt;&lt;status&gt;Actual&lt;/status&gt;&lt;msgType&gt;Alert&lt;/msgType&gt;&lt;scope&gt;Public&lt;/scope&gt;&lt;info&gt;&lt;language&gt;en-US&lt;/language&gt;&lt;category&gt;Other&lt;/category&gt;&lt;event&gt;Nationwide Test&lt;/event&gt;&lt;urgency&gt;Immediate&lt;/urgency&gt;&lt;severity&gt;Severe&lt;/severity&gt;&lt;certainty&gt;Observed&lt;/certainty&gt;&lt;effective&gt;2026-06-14T06:17:56-00:00&lt;/effective&gt;&lt;expires&gt;2026-06-14T06:32:56-00:00&lt;/expires&gt;&lt;senderName&gt;National Emergency Management Agency&lt;/senderName&gt;&lt;headline&gt;Nationwide Test 2026&lt;/headline&gt;&lt;description&gt;TEST MESSAGE - Emergency Mobile Alert. 
+
+This is a nationwide test of the Emergency Mobile Alert system. You do not need to directly respond to this test.  
+
+You may receive an Emergency Mobile Alert like this if there is serious danger to life, health or property in your area. If you receive an alert, take it seriously and follow the instructions carefully.  
+
+Remember, these Emergency Mobile Alerts are an additional channel to help keep you safe. It does not replace other alerting channels like radio, or the need to take action after natural warnings. If you feel in danger, don't wait for an official warning. Take immediate action.   
+
+www.civildefence.govt.nz 
+
+Sent at 6:17pm by the National Emergency Management Agency&lt;/description&gt;&lt;area&gt;&lt;areaDesc&gt;Nationwide - 2026 Test Message&lt;/areaDesc&gt;&lt;polygon&gt;-45.71982,165.6585 -40.1139,172.4454 -37.59642,174.35219 -34.35258,171.47584 -33.38611,173.51191 -37.13385,176.96999 -36.87563,179.39388 -37.95422,180.26648 -41.9912,175.83884 -43.06344,173.60886 -44.00108,173.47959 -44.39516,172.05757 -47.03585,169.85991 -47.51846,167.24211 -45.71982,165.6585&lt;/polygon&gt;&lt;polygon&gt;-43.90462,-176.00281 -43.83876,-176.01181 -43.77544,-176.03847 -43.71707,-176.08177 -43.66592,-176.14004 -43.62393,-176.21104 -43.59274,-176.29205 -43.57353,-176.37994 -43.56704,-176.47135 -43.57353,-176.56276 -43.59274,-176.65066 -43.62393,-176.73166 -43.66592,-176.80266 -43.71707,-176.86093 -43.77544,-176.90423 -43.83876,-176.93089 -43.90462,-176.9399 -43.97048,-176.93089 -44.03381,-176.90423 -44.09217,-176.86093 -44.14333,-176.80266 -44.18531,-176.73166 -44.21651,-176.65066 -44.23572,-176.56276 -44.24221,-176.47135 -44.23572,-176.37994 -44.21651,-176.29205 -44.18531,-176.21104 -44.14333,-176.14004 -44.09217,-176.08177 -44.03381,-176.03847 -43.97048,-176.01181 -43.90462,-176.00281&lt;/polygon&gt;&lt;/area&gt;&lt;/info&gt;&lt;/alert&gt;</content>
+    <summary>TEST MESSAGE - Emergency Mobile Alert. 
+
+This is a nationwide test of the Emergency Mobile Alert system. You do not need to directly respond to this test.  
+
+You may receive an Emergency Mobile Alert like this if there is serious danger to life, health or property in your area. If you receive an alert, take it seriously and follow the instructions carefully.  
+
+Remember, these Emergency Mobile Alerts are an additional channel to help keep you safe. It does not replace other alerting channels like radio, or the need to take action after natural warnings. If you feel in danger, don't wait for an official warning. Take immediate action.   
+
+www.civildefence.govt.nz 
+
+Sent at 6:17pm by the National Emergency Management Agency</summary>
+  </entry>
+</feed>

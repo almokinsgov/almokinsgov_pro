@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://alerts.metservice.com/cap/atom</id>
+  <link href="https://metservice.com"/>
+  <updated>2025-07-28T10:25:35+12:00</updated>
+  <title>Current Watches, Warnings and Advisories for New Zealand issued by MetService</title>
+  <rights>Copyright Meteorological Service of New Zealand Limited, 2025. Licensed under Creative Commons BY 4.0.</rights>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.18</id>
+    <category term="Met" />
+    <summary>Expect 80 to 120 mm of rain, with thunderstorms and downpours possible. Peak rates of 20 to 30 mm/h expected Tuesday afternoon and evening. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Low. Changes: Watch upgraded to an Orange Warning with Low chance of upgrade.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.18"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.17</id>
+    <category term="Met" />
+    <summary>Expect 130 to 180 mm of rain, with downpours possible. Peak rates of 20 to 30 mm/h expected Tuesday evening. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Moderate. Changes: Watch upgraded to an Orange Warning with Moderate chance of upgrade.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.17"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.16</id>
+    <category term="Met" />
+    <summary>Expect 80 to 110 mm of rain. Peak rates of 10 to 20 mm/h expected Tuesday evening and Wednesday morning. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Low. Changes: Watch upgraded to an Orange Warning with Low chance of upgrade.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.16"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.15</id>
+    <category term="Met" />
+    <summary>Expect 150 to 180 mm of rain. Intensities may reach 20 to 30 mm per hour. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Minimal. Changes: No significant change.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.15"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.14</id>
+    <category term="Met" />
+    <summary>Expect 130 to 180 mm in a strong northerly flow. Rainfall intensities may reach 15 to 20 mm per hour, especially from mid-morning until early afternoon. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Moderate. Changes: No significant changes.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.14"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.13</id>
+    <category term="Met" />
+    <summary>Expect 70 to 100 mm of rain, especially in the ranges. Rainfall intensities of 15 mm per hour are possible, especially during the afternoon. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Moderate. Changes: Split into separate Warning for Nelson City and Marlborough.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.13"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.12</id>
+    <category term="Met" />
+    <summary>Expect 100 to 130 mm of rain in a strong northerly flow, particularly about the Gordon, Richmond and Bryant Ranges, and 70 to 90 mm elsewhere. Rainfall intensities of 15 mm per hour are possible, especially during the afternoon. Impact: Dangerous river conditions, flooding, and slips likely. Dangerous driving conditions and road closures are expected. Chance of upgrading to a Red Warning: High. Changes: Split into separate Warning for Ranges and southern Tasman.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.12"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.11</id>
+    <category term="Met" />
+    <summary>Expect 130 to 180 mm of rain. Rainfall intensities of 20 to 25 mm per hour are possible. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Minimal. Changes: slight timing change.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.11"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.10</id>
+    <category term="Met" />
+    <summary>Expect 130 to 180 mm of rain about the main divide, and 100 to 130 mm within 15km farther east. Peak rates of 10 to 20 mm/h expected about the divide. Freezing level 2400 m. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Minimal. Changes: Split into separate Warning for just Canterbury Headwaters, and increased expected totals.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.10"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.9</id>
+    <category term="Met" />
+    <summary>Expect 130 to 180 mm of rain about the main divide, and 80 to 100 mm within 15km farther east. Peak rates of 10 to 20 mm/h expected about the divide. Freezing level 2400 m. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Minimal. Changes: Split into separate Warning for just Otago Headwaters.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.9"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.8</id>
+    <category term="Met" />
+    <summary>Periods of heavy rain and accumulations may approach warning criteria. There is a low chance of downpours, especially during Tuesday morning and early afternoon. Chance of upgrading to a Warning: Moderate. Changes: Small wording change.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.8"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.7</id>
+    <category term="Met" />
+    <summary>Periods of heavy rain and accumulations may approach warning criteria. There is a low chance of downpours, especially late Tuesday morning and through Tuesday afternoon. Chance of upgrading to a Warning: Moderate. Changes: Small wording change.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.7"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.6</id>
+    <category term="Met" />
+    <summary>Periods of heavy rain, and amounts may approach warning criteria. Chance of upgrading to a Warning: Moderate.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.6"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.5</id>
+    <category term="Met" />
+    <summary>Periods of heavy rain north of Tokomaru Bay, and amounts may approach warning criteria, especially about the ranges. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Warning: High.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.5"/>
+  </entry>
+  <entry>
+    <title>Strong Wind Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.4</id>
+    <category term="Met" />
+    <summary>Northeast winds may approach severe gale force in exposed places. Chance of upgrading to a Warning: Moderate.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.4"/>
+  </entry>
+  <entry>
+    <title>Strong Wind Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.3</id>
+    <category term="Met" />
+    <summary>Northeast winds may approach severe gale force in exposed places. Chance of upgrading to a Warning: Moderate. Changes: No significant changes.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.3"/>
+  </entry>
+  <entry>
+    <title>Strong Wind Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.2</id>
+    <category term="Met" />
+    <summary>Northeast winds may approach severe gale force in exposed places. Chance of upgrading to a Warning: Moderate. Changes: Minor wording change.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.2"/>
+  </entry>
+  <entry>
+    <title>Strong Wind Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.1</id>
+    <category term="Met" />
+    <summary>Northerly winds may approach severe gale in exposed coastal places. Chance of upgrading to a Warning: Moderate.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.1"/>
+  </entry>
+  <entry>
+    <title>Strong Wind Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20250727222535054.0</id>
+    <category term="Met" />
+    <summary>North to northeast winds may approach severe gale force in exposed places. Chance of upgrading to a Warning: Moderate. Changes: Lowered risk of upgrade to moderate.</summary>
+    <updated>2025-07-28T10:25:35+12:00</updated>
+    <published>2025-07-28T10:25:35+12:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20250727222535054.0"/>
+  </entry>
+</feed>

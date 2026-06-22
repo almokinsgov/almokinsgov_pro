@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>New Zealand Emergency Mobile Alert feed</title>
+  <link rel="self" href="https://alerthub.civildefence.govt.nz/atom/pwp" />
+  <subtitle>A feed of current or recent Emergency Mobile Alerts issued in New Zealand.</subtitle>
+  <id>https://alerthub.civildefence.govt.nz/atom/pwp</id>
+  <updated>2026-03-28T06:51:20Z</updated>
+  <entry>
+    <title>Kaikohe residents URGENT: SAVE WATER NOW</title>
+    <link rel="alternate" href="https://alerthub.civildefence.govt.nz/messages/cap/Mi40OS4wLjAuNTU0LjIuMS40NTguNDU4" />
+    <author>
+      <name>New Zealand Emergency Mobile Alert</name>
+      <email>emergency.management@nema.govt.nz</email>
+    </author>
+    <id>https://alerthub.civildefence.govt.nz/messages/cap/2.49.0.0.554.2.1.458.458#0</id>
+    <updated>2026-03-27T05:02:04Z</updated>
+    <published>2026-03-27T05:02:03Z</published>
+    <content>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;alert xmlns="urn:oasis:names:tc:emergency:cap:1.2"&gt;&lt;identifier&gt;2.49.0.0.554.2.1.458.458&lt;/identifier&gt;&lt;sender&gt;info@nrc.govt.nz&lt;/sender&gt;&lt;sent&gt;2026-03-27T05:02:03-00:00&lt;/sent&gt;&lt;status&gt;Actual&lt;/status&gt;&lt;msgType&gt;Alert&lt;/msgType&gt;&lt;scope&gt;Public&lt;/scope&gt;&lt;info&gt;&lt;language&gt;en-US&lt;/language&gt;&lt;category&gt;Infra&lt;/category&gt;&lt;event&gt;Alert&lt;/event&gt;&lt;urgency&gt;Immediate&lt;/urgency&gt;&lt;severity&gt;Severe&lt;/severity&gt;&lt;certainty&gt;Observed&lt;/certainty&gt;&lt;effective&gt;2026-03-27T05:02:03-00:00&lt;/effective&gt;&lt;expires&gt;2026-03-27T07:02:03-00:00&lt;/expires&gt;&lt;senderName&gt;Northland Civil Defence Emergency Management Group&lt;/senderName&gt;&lt;headline&gt;Kaikohe residents URGENT: SAVE WATER NOW&lt;/headline&gt;&lt;description&gt;URGENT: SAVE WATER NOW 
+Kaikohe residents and businesses need to immediately reduce water use, or the town supply reservoirs will run out of water overnight.  We need everyone to act now to save water. USE WATER FOR ESSENTIAL PURPOSES ONLY. 
+Do NOT wash cars or use hoses, take shorter showers, hold off washing clothes or dishes, and only flush toilets when necessary. Any action you can take to save water will help. 
+More info at fndc.govt.nz&lt;/description&gt;&lt;area&gt;&lt;areaDesc&gt;Alert area&lt;/areaDesc&gt;&lt;polygon&gt;-35.35832,173.82728 -35.41298,173.86267 -35.43494,173.7742 -35.38012,173.75013 -35.35832,173.82728&lt;/polygon&gt;&lt;/area&gt;&lt;/info&gt;&lt;/alert&gt;</content>
+    <summary>URGENT: SAVE WATER NOW 
+Kaikohe residents and businesses need to immediately reduce water use, or the town supply reservoirs will run out of water overnight.  We need everyone to act now to save water. USE WATER FOR ESSENTIAL PURPOSES ONLY. 
+Do NOT wash cars or use hoses, take shorter showers, hold off washing clothes or dishes, and only flush toilets when necessary. Any action you can take to save water will help. 
+More info at fndc.govt.nz</summary>
+  </entry>
+</feed>
