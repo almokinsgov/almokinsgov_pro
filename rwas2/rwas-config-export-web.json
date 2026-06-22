@@ -190,6 +190,7 @@
   "nztaEventTypes": [
     "closures",
     "warnings",
+    "roadworks",
     "hazards"
   ],
   "nztaUseProxy": false,
