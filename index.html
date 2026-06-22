@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#07130f">
+  <meta name="theme-color" content="#06100d">
   <meta name="description" content="almokinsgov.dev is a home for practical digital tools, thoughtful experiments and useful projects.">
   <meta name="robots" content="index,follow">
 
@@ -14,12 +14,18 @@
 
   <title>almokinsgov.dev</title>
 
+  <script>
+    window.CESIUM_BASE_URL = "https://cesium.com/downloads/cesiumjs/releases/1.142/Build/Cesium/";
+  </script>
+  <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.142/Build/Cesium/Widgets/widgets.css">
+  <script defer src="https://cesium.com/downloads/cesiumjs/releases/1.142/Build/Cesium/Cesium.js"></script>
+
   <style>
     :root {
       color-scheme: dark;
       --background: #06100d;
       --text: #f5faf7;
-      --muted: #9fb2a8;
+      --muted: #b0c0b8;
       --line: rgba(201, 236, 219, 0.14);
       --green: #58df9b;
       --green-soft: #b3f4d3;
@@ -40,44 +46,63 @@
       min-height: 100vh;
       margin: 0;
       overflow-x: hidden;
+      overflow-y: auto;
       background:
-        radial-gradient(circle at 18% 12%, rgba(88, 223, 155, 0.14), transparent 30rem),
-        radial-gradient(circle at 84% 82%, rgba(109, 201, 255, 0.11), transparent 32rem),
-        linear-gradient(145deg, #040a08 0%, var(--background) 46%, #081712 100%);
+        radial-gradient(circle at 18% 12%, rgba(88, 223, 155, 0.12), transparent 30rem),
+        linear-gradient(145deg, #040a08 0%, var(--background) 52%, #081712 100%);
       color: var(--text);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
 
-    body::before {
+    .globe-background,
+    .globe-shade,
+    .globe-grid {
       position: fixed;
       inset: 0;
-      z-index: -2;
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
-      background-size: 48px 48px;
-      content: "";
-      mask-image: linear-gradient(to bottom, black, transparent 82%);
+    }
+
+    .globe-background {
+      z-index: 0;
+      overflow: hidden;
+      background: #020806;
       pointer-events: none;
     }
 
-    .ambient-glow {
-      position: fixed;
-      top: var(--pointer-y, 44%);
-      left: var(--pointer-x, 58%);
-      z-index: -1;
-      width: 36rem;
-      height: 36rem;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(88, 223, 155, 0.085), transparent 68%);
-      transform: translate(-50%, -50%);
-      transition: top 180ms ease-out, left 180ms ease-out;
+    .globe-background .cesium-viewer,
+    .globe-background .cesium-viewer-cesiumWidgetContainer,
+    .globe-background .cesium-widget,
+    .globe-background canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .globe-background canvas {
+      filter: saturate(0.72) contrast(1.08) brightness(0.7);
+    }
+
+    .globe-shade {
+      z-index: 1;
+      background:
+        radial-gradient(circle at 50% 44%, rgba(5, 18, 13, 0.08) 0%, rgba(4, 12, 9, 0.34) 54%, rgba(2, 7, 5, 0.82) 100%),
+        linear-gradient(180deg, rgba(3, 9, 7, 0.45), rgba(3, 10, 7, 0.2) 42%, rgba(3, 9, 7, 0.66));
+      pointer-events: none;
+    }
+
+    .globe-grid {
+      z-index: 2;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: linear-gradient(to bottom, black, transparent 86%);
       pointer-events: none;
     }
 
     .page-shell {
+      position: relative;
+      z-index: 3;
       display: grid;
       min-height: 100vh;
       grid-template-rows: auto 1fr auto;
@@ -105,6 +130,7 @@
       font-weight: 750;
       letter-spacing: -0.01em;
       text-decoration: none;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.72);
     }
 
     .brand-mark {
@@ -114,10 +140,13 @@
       height: 36px;
       place-items: center;
       overflow: hidden;
-      border: 1px solid rgba(179, 244, 211, 0.3);
+      border: 1px solid rgba(179, 244, 211, 0.34);
       border-radius: 12px;
-      background: linear-gradient(145deg, rgba(88, 223, 155, 0.16), rgba(109, 201, 255, 0.08));
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      background: rgba(6, 20, 15, 0.68);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 8px 24px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(12px);
     }
 
     .brand-mark::before,
@@ -154,27 +183,9 @@
     }
 
     .hero {
-      position: relative;
       width: 100%;
       padding-block: clamp(70px, 12vw, 160px);
       text-align: center;
-    }
-
-    .hero::before {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      z-index: -1;
-      width: min(72vw, 820px);
-      aspect-ratio: 1;
-      border: 1px solid rgba(179, 244, 211, 0.07);
-      border-radius: 50%;
-      content: "";
-      box-shadow:
-        0 0 0 80px rgba(109, 201, 255, 0.018),
-        0 0 0 160px rgba(88, 223, 155, 0.012);
-      transform: translate(-50%, -50%);
-      pointer-events: none;
     }
 
     h1 {
@@ -183,11 +194,16 @@
       font-weight: 830;
       letter-spacing: -0.078em;
       line-height: 0.88;
+      text-shadow:
+        0 3px 28px rgba(0, 0, 0, 0.82),
+        0 16px 70px rgba(0, 0, 0, 0.58);
     }
 
     .domain-dot {
       color: var(--green);
-      text-shadow: 0 0 30px rgba(88, 223, 155, 0.42);
+      text-shadow:
+        0 0 30px rgba(88, 223, 155, 0.42),
+        0 3px 28px rgba(0, 0, 0, 0.82);
     }
 
     .hero-description {
@@ -196,6 +212,7 @@
       color: var(--muted);
       font-size: clamp(1rem, 1.8vw, 1.22rem);
       line-height: 1.7;
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.94);
     }
 
     .hero-description strong {
@@ -210,12 +227,43 @@
       gap: 20px;
       padding-block: 24px 34px;
       border-top: 1px solid var(--line);
-      color: #7f9288;
+      color: #9bad9f;
       font-size: 0.78rem;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.94);
     }
 
     .footer-note {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .cesium-credits {
+      position: fixed;
+      right: 10px;
+      bottom: 6px;
+      z-index: 4;
+      max-width: min(54vw, 520px);
+      opacity: 0.42;
+      font-size: 9px;
+      line-height: 1.2;
+      transition: opacity 160ms ease;
+	  	  display: none !important;
+    }
+
+    .cesium-credits:hover,
+    .cesium-credits:focus-within {
+      opacity: 0.9;
+    }
+
+    .cesium-credits .cesium-credit-logoContainer,
+    .cesium-credits .cesium-credit-textContainer {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .cesium-credits a {
+      color: #d7e8df;
     }
 
     .reveal {
@@ -265,7 +313,14 @@
       .site-footer {
         align-items: flex-start;
         flex-direction: column;
-        padding-bottom: 24px;
+        padding-bottom: 34px;
+      }
+
+      .cesium-credits {
+        right: 6px;
+        bottom: 4px;
+        max-width: 72vw;
+        font-size: 8px;
       }
     }
 
@@ -277,20 +332,10 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-
-      .ambient-glow {
-        display: none;
-      }
     }
   </style>
-<script>
-  window.RWAS_CONFIG = {
-    useProxy: true
-  };
   
-</script>
-
-<script src="./rwas2/extensions/rwas-config-storage.js" defer></script>
+  <script src="./rwas2/extensions/rwas-config-storage.js" defer></script>
 <script src="./rwas2/extensions/rwas-map-view-plugin.js" defer></script>
 <script src="./rwas2/extensions/rwas-notification-plugin.js" defer></script>
 <script src="./rwas2/extensions/rwas-agent-metadata-plugin.js" defer></script>
@@ -302,11 +347,13 @@
 <script src="./rwas2/extensions/rwas-far-north-placenames-plugin.js" defer></script>
 <script src="./rwas2/extensions/rwas-far-north-areas-plugin.js" defer></script>
 <script src="./rwas2/extensions/rwas-nzta-conditions-plugin.js" defer></script>
-<script src="./rwas2/rwas-popup.js" defer data-rwas data-rwas-config-url="./rwas2/almokinsgov.dev.json"></script>
-  
+<script src="./rwas2/rwas-popup.js" defer data-rwas data-rwas-config-url="./rwas2/rwas-config-export-web.json"></script>
 </head>
 <body>
-  <div class="ambient-glow" aria-hidden="true"></div>
+  <div id="cesium-background" class="globe-background" aria-hidden="true"></div>
+  <div class="globe-shade" aria-hidden="true"></div>
+  <div class="globe-grid" aria-hidden="true"></div>
+  <div id="cesium-credits" class="cesium-credits" aria-label="Map credits"></div>
 
   <div class="page-shell">
     <header class="site-header reveal">
@@ -339,19 +386,199 @@
       "use strict";
 
       const yearElement = document.getElementById("current-year");
-      const root = document.documentElement;
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (yearElement) {
         yearElement.textContent = String(new Date().getFullYear());
       }
 
-      if (!reducedMotion) {
-        window.addEventListener("pointermove", (event) => {
-          root.style.setProperty("--pointer-x", `${event.clientX}px`);
-          root.style.setProperty("--pointer-y", `${event.clientY}px`);
-        }, { passive: true });
-      }
+      const waitForCesium = (attempt = 0) => {
+        if (!window.Cesium) {
+          if (attempt < 200) {
+            window.setTimeout(() => waitForCesium(attempt + 1), 50);
+          }
+          return;
+        }
+
+        initialiseGlobe().catch((error) => {
+          console.error("Cesium background could not be initialised.", error);
+        });
+      };
+
+      const initialiseGlobe = async () => {
+        const viewer = new Cesium.Viewer("cesium-background", {
+          animation: false,
+          baseLayer: false,
+          baseLayerPicker: false,
+          fullscreenButton: false,
+          geocoder: false,
+          homeButton: false,
+          infoBox: false,
+          navigationHelpButton: false,
+          scene3DOnly: true,
+          sceneModePicker: false,
+          selectionIndicator: false,
+          timeline: false,
+          creditContainer: "cesium-credits",
+          terrainProvider: new Cesium.EllipsoidTerrainProvider(),
+          targetFrameRate: reducedMotion ? 15 : 30,
+          useBrowserRecommendedResolution: true
+        });
+
+        const scene = viewer.scene;
+        const camera = viewer.camera;
+        const controller = scene.screenSpaceCameraController;
+
+        controller.enableInputs = false;
+        scene.backgroundColor = Cesium.Color.fromCssColorString("#020806");
+        scene.globe.baseColor = Cesium.Color.fromCssColorString("#081510");
+        scene.globe.showGroundAtmosphere = true;
+        scene.globe.enableLighting = false;
+        scene.fog.enabled = true;
+        scene.fog.density = 0.00012;
+        scene.highDynamicRange = true;
+
+        if (scene.skyAtmosphere) {
+          scene.skyAtmosphere.hueShift = -0.08;
+          scene.skyAtmosphere.saturationShift = -0.18;
+          scene.skyAtmosphere.brightnessShift = -0.22;
+        }
+
+        const imageryProvider = await Cesium.ArcGisMapServerImageryProvider.fromBasemapType(
+          Cesium.ArcGisBaseMapType.SATELLITE
+        );
+        const imageryLayer = viewer.imageryLayers.addImageryProvider(imageryProvider);
+        imageryLayer.brightness = 0.8;
+        imageryLayer.contrast = 1.08;
+        imageryLayer.saturation = 0.84;
+        imageryLayer.gamma = 0.95;
+
+        const toRadians = Cesium.Math.toRadians;
+        const lerp = (start, end, amount) => start + (end - start) * amount;
+        const easeInOut = (value) => 0.5 - Math.cos(Math.PI * value) / 2;
+
+        const scenes = [
+          {
+            name: "Far North Region",
+            lon: 173.45,
+            lat: -35.18,
+            heading: toRadians(18),
+            pitch: toRadians(-62),
+            range: 720000,
+            hoverDuration: 20000,
+            transitionDuration: 9000,
+            lonDrift: 0.08,
+            latDrift: 0.05,
+            headingDrift: toRadians(5),
+            pitchDrift: toRadians(2),
+            rangeDrift: 26000
+          },
+          {
+            name: "Far North District",
+            lon: 173.28,
+            lat: -35.02,
+            heading: toRadians(26),
+            pitch: toRadians(-66),
+            range: 210000,
+            hoverDuration: 22000,
+            transitionDuration: 9000,
+            lonDrift: 0.035,
+            latDrift: 0.022,
+            headingDrift: toRadians(4),
+            pitchDrift: toRadians(1.4),
+            rangeDrift: 9000
+          },
+          {
+            name: "Kaitaia Town",
+            lon: 173.2686,
+            lat: -35.1122,
+            heading: toRadians(38),
+            pitch: toRadians(-70),
+            range: 46000,
+            hoverDuration: 22000,
+            transitionDuration: 10000,
+            lonDrift: 0.007,
+            latDrift: 0.005,
+            headingDrift: toRadians(3.2),
+            pitchDrift: toRadians(1.1),
+            rangeDrift: 2200
+          }
+        ];
+
+        const getSceneState = (sceneConfig, elapsedMs) => {
+          const t = elapsedMs / 1000;
+          return {
+            lon: sceneConfig.lon + Math.sin(t * 0.07) * sceneConfig.lonDrift,
+            lat: sceneConfig.lat + Math.cos(t * 0.06) * sceneConfig.latDrift,
+            heading: sceneConfig.heading + Math.sin(t * 0.05) * sceneConfig.headingDrift,
+            pitch: sceneConfig.pitch + Math.cos(t * 0.045) * sceneConfig.pitchDrift,
+            range: sceneConfig.range + Math.sin(t * 0.08) * sceneConfig.rangeDrift
+          };
+        };
+
+        const applyState = (state) => {
+          camera.lookAt(
+            Cesium.Cartesian3.fromDegrees(state.lon, state.lat, 0),
+            new Cesium.HeadingPitchRange(state.heading, state.pitch, state.range)
+          );
+        };
+
+        if (reducedMotion) {
+          applyState({
+            lon: scenes[1].lon,
+            lat: scenes[1].lat,
+            heading: scenes[1].heading,
+            pitch: scenes[1].pitch,
+            range: scenes[1].range
+          });
+          scene.requestRender();
+          return;
+        }
+
+        let sceneIndex = 0;
+        let segmentStartedAt = performance.now();
+        let currentPhase = 'hover';
+
+        applyState(getSceneState(scenes[sceneIndex], 0));
+
+        scene.preRender.addEventListener(() => {
+          const now = performance.now();
+          const currentScene = scenes[sceneIndex];
+          const nextScene = scenes[(sceneIndex + 1) % scenes.length];
+          const elapsed = now - segmentStartedAt;
+
+          if (currentPhase === 'hover') {
+            applyState(getSceneState(currentScene, elapsed));
+
+            if (elapsed >= currentScene.hoverDuration) {
+              currentPhase = 'transition';
+              segmentStartedAt = now;
+            }
+            return;
+          }
+
+          const progress = Math.min(elapsed / currentScene.transitionDuration, 1);
+          const eased = easeInOut(progress);
+          const startState = getSceneState(currentScene, currentScene.hoverDuration + elapsed);
+          const endState = getSceneState(nextScene, elapsed);
+
+          applyState({
+            lon: lerp(startState.lon, endState.lon, eased),
+            lat: lerp(startState.lat, endState.lat, eased),
+            heading: lerp(startState.heading, endState.heading, eased),
+            pitch: lerp(startState.pitch, endState.pitch, eased),
+            range: lerp(startState.range, endState.range, eased)
+          });
+
+          if (progress >= 1) {
+            sceneIndex = (sceneIndex + 1) % scenes.length;
+            currentPhase = 'hover';
+            segmentStartedAt = now;
+          }
+        });
+      };
+
+      waitForCesium();
     })();
   </script>
 </body>
