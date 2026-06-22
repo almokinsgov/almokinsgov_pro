@@ -199,7 +199,17 @@
   "metServiceSourceUrl": "https://raw.githubusercontent.com/almokinsgov/NZCAPFeeds/refs/heads/main/feeds/metservice-cap-atom/current.xml",
   "metServiceAtomUrl": "https://raw.githubusercontent.com/almokinsgov/NZCAPFeeds/refs/heads/main/feeds/metservice-cap-atom/current.xml",
   "metServiceDetailMode": "auto",
-  "metServiceFeeds": [],
+  "metServiceFeeds": [
+    {
+      "enabled": true,
+      "atomUrl": "./rwas2/References/latest_2025-07-28T08-21-52-472Z.xml",
+      "sourceLabel": "MetService archive",
+      "badgeText": "MetService",
+      "useProxy": false,
+      "detailMode": "atom",
+      "defaultLink": "https://www.metservice.com/warnings/home"
+    }
+  ],
   "enableCivilDefenceAlerts": true,
   "civilDefenceUseProxy": false,
   "civilDefenceAtomUrl": "https://raw.githubusercontent.com/almokinsgov/NZCAPFeeds/refs/heads/main/feeds/alert-hub-pwp/current.xml",
@@ -207,7 +217,7 @@
   "civilDefenceFeeds": [
    {
       "enabled": true,
-      "atomUrl": ".//rwas2/References/alerthub-atom-pwp.txt",
+      "atomUrl": "./rwas2/References/alerthub-atom-pwp.txt",
       "source": "cd-atom-test1",
       "sourceLabel": "Civil Defence Example EMA",
       "badgeText": "Civil Defence Example EMA",
