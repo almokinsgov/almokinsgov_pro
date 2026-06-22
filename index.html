@@ -2,7 +2,7 @@
 <html lang="en-NZ">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#06100d">
   <meta name="description" content="almokinsgov.dev is a home for practical digital tools, thoughtful experiments and useful projects.">
   <meta name="robots" content="index,follow">
@@ -39,11 +39,13 @@
 
     html {
       min-width: 320px;
+      min-height: 100%;
       background: var(--background);
     }
 
     body {
       min-height: 100vh;
+      min-height: 100svh;
       margin: 0;
       overflow-x: hidden;
       overflow-y: auto;
@@ -61,6 +63,9 @@
     .globe-grid {
       position: fixed;
       inset: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
     }
 
     .globe-background {
@@ -105,7 +110,9 @@
       z-index: 3;
       display: grid;
       min-height: 100vh;
-      grid-template-rows: auto 1fr auto;
+      min-height: 100svh;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      padding-top: env(safe-area-inset-top, 0px);
     }
 
     .site-header,
@@ -113,6 +120,11 @@
     .site-footer {
       width: min(calc(100% - 40px), var(--max-width));
       margin-inline: auto;
+    }
+
+    .site-header,
+    .site-footer {
+      padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
     }
 
     .site-header {
@@ -178,8 +190,10 @@
 
     .site-main {
       display: grid;
+      min-height: 0;
       place-items: center;
-      padding-block: clamp(48px, 8vw, 112px);
+      padding-block: clamp(32px, 7vw, 96px);
+      padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
     }
 
     .hero {
@@ -189,11 +203,13 @@
     }
 
     h1 {
+      max-width: 100%;
       margin: 0;
       font-size: clamp(3.45rem, 11vw, 9rem);
       font-weight: 830;
       letter-spacing: -0.078em;
       line-height: 0.88;
+      white-space: nowrap;
       text-shadow:
         0 3px 28px rgba(0, 0, 0, 0.82),
         0 16px 70px rgba(0, 0, 0, 0.58);
@@ -238,15 +254,14 @@
 
     .cesium-credits {
       position: fixed;
-      right: 10px;
-      bottom: 6px;
+      right: max(10px, env(safe-area-inset-right, 0px));
+      bottom: max(6px, env(safe-area-inset-bottom, 0px));
       z-index: 4;
       max-width: min(54vw, 520px);
       opacity: 0.42;
       font-size: 9px;
       line-height: 1.2;
       transition: opacity 160ms ease;
-	  	  display: none !important;
     }
 
     .cesium-credits:hover,
@@ -287,40 +302,142 @@
       }
     }
 
-    @media (max-width: 620px) {
+    @media (max-width: 760px) {
       .site-header,
       .site-main,
       .site-footer {
-        width: min(calc(100% - 24px), var(--max-width));
+        width: min(calc(100% - 28px), var(--max-width));
       }
 
       .site-header {
-        min-height: 76px;
+        min-height: 72px;
+      }
+
+      .brand {
+        gap: 10px;
+        font-size: 0.88rem;
+      }
+
+      .brand-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+      }
+
+      .site-main {
+        padding-block: 24px;
       }
 
       .hero {
-        padding-block: 80px 100px;
+        padding-block: clamp(42px, 11vh, 88px);
       }
 
       h1 {
-        font-size: clamp(3.2rem, 18vw, 5.2rem);
+        font-size: clamp(2.5rem, 12.7vw, 5.2rem);
+        letter-spacing: -0.072em;
+        line-height: 0.92;
       }
 
       .hero-description {
-        margin-top: 26px;
+        max-width: 32rem;
+        margin-top: 24px;
+        padding-inline: 8px;
+        font-size: clamp(0.96rem, 4vw, 1.08rem);
+        line-height: 1.58;
       }
 
       .site-footer {
         align-items: flex-start;
         flex-direction: column;
-        padding-bottom: 34px;
+        gap: 7px;
+        padding-block: 18px calc(54px + env(safe-area-inset-bottom, 0px));
+        font-size: 0.72rem;
       }
 
       .cesium-credits {
-        right: 6px;
-        bottom: 4px;
-        max-width: 72vw;
-        font-size: 8px;
+	  display: none;
+        right: max(8px, env(safe-area-inset-right, 0px));
+        bottom: max(5px, env(safe-area-inset-bottom, 0px));
+        left: max(8px, env(safe-area-inset-left, 0px));
+        max-width: none;
+        overflow: hidden;
+        font-size: 7px;
+        line-height: 1.15;
+        text-align: right;
+      }
+
+      .cesium-credits .cesium-credit-logoContainer,
+      .cesium-credits .cesium-credit-textContainer {
+        justify-content: flex-end;
+      }
+
+      .globe-background canvas {
+        filter: saturate(0.76) contrast(1.06) brightness(0.66);
+      }
+
+      .globe-grid {
+        background-size: 40px 40px;
+        opacity: 0.68;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .site-header,
+      .site-main,
+      .site-footer {
+        width: min(calc(100% - 20px), var(--max-width));
+      }
+
+      .site-header {
+        min-height: 64px;
+      }
+
+      .hero {
+        padding-block: 34px 54px;
+      }
+
+      h1 {
+        font-size: clamp(2.2rem, 12.2vw, 3rem);
+        letter-spacing: -0.066em;
+      }
+
+      .hero-description {
+        margin-top: 20px;
+        font-size: 0.94rem;
+      }
+
+      .footer-note {
+        display: none;
+      }
+    }
+
+    @media (max-height: 620px) and (orientation: landscape) {
+      .site-header {
+        min-height: 56px;
+      }
+
+      .site-main {
+        padding-block: 8px;
+      }
+
+      .hero {
+        padding-block: 18px 28px;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 9vw, 4.4rem);
+      }
+
+      .hero-description {
+        max-width: 38rem;
+        margin-top: 16px;
+        font-size: 0.9rem;
+        line-height: 1.45;
+      }
+
+      .site-footer {
+        flex-direction: row;
+        padding-block: 12px calc(30px + env(safe-area-inset-bottom, 0px));
       }
     }
 
@@ -335,7 +452,7 @@
     }
   </style>
   
-  <script src="./rwas2/extensions/rwas-config-storage.js" defer></script>
+    <script src="./rwas2/extensions/rwas-config-storage.js" defer></script>
 <script src="./rwas2/extensions/rwas-map-view-plugin.js" defer></script>
 <script src="./rwas2/extensions/rwas-notification-plugin.js" defer></script>
 <script src="./rwas2/extensions/rwas-agent-metadata-plugin.js" defer></script>
@@ -387,6 +504,8 @@
 
       const yearElement = document.getElementById("current-year");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const mobileViewport = window.matchMedia("(max-width: 760px)").matches;
+      const compactLandscape = window.matchMedia("(max-height: 620px) and (orientation: landscape)").matches;
 
       if (yearElement) {
         yearElement.textContent = String(new Date().getFullYear());
@@ -421,7 +540,7 @@
           timeline: false,
           creditContainer: "cesium-credits",
           terrainProvider: new Cesium.EllipsoidTerrainProvider(),
-          targetFrameRate: reducedMotion ? 15 : 30,
+          targetFrameRate: reducedMotion ? 15 : (mobileViewport ? 20 : 30),
           useBrowserRecommendedResolution: true
         });
 
@@ -436,7 +555,14 @@
         scene.globe.enableLighting = false;
         scene.fog.enabled = true;
         scene.fog.density = 0.00012;
-        scene.highDynamicRange = true;
+        scene.highDynamicRange = !mobileViewport;
+        scene.globe.maximumScreenSpaceError = mobileViewport ? 3 : 2;
+        scene.globe.preloadAncestors = !mobileViewport;
+        scene.globe.preloadSiblings = !mobileViewport;
+
+        if (scene.postProcessStages?.fxaa) {
+          scene.postProcessStages.fxaa.enabled = !mobileViewport;
+        }
 
         if (scene.skyAtmosphere) {
           scene.skyAtmosphere.hueShift = -0.08;
@@ -516,10 +642,16 @@
           };
         };
 
+        const rangeMultiplier = compactLandscape ? 1.18 : (mobileViewport ? 1.12 : 1);
+
         const applyState = (state) => {
           camera.lookAt(
             Cesium.Cartesian3.fromDegrees(state.lon, state.lat, 0),
-            new Cesium.HeadingPitchRange(state.heading, state.pitch, state.range)
+            new Cesium.HeadingPitchRange(
+              state.heading,
+              state.pitch,
+              state.range * rangeMultiplier
+            )
           );
         };
 
