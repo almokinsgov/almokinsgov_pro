@@ -204,7 +204,29 @@
   "civilDefenceUseProxy": false,
   "civilDefenceAtomUrl": "https://raw.githubusercontent.com/almokinsgov/NZCAPFeeds/refs/heads/main/feeds/alert-hub-pwp/current.xml",
   "civilDefenceAtomFeedUrl": "",
-  "civilDefenceFeeds": [],
+  "civilDefenceFeeds": [
+   {
+      "enabled": true,
+      "atomUrl": "./References/alerthub-atom-pwp.txt",
+      "source": "cd-atom-test1",
+      "sourceLabel": "Civil Defence Example EMA",
+      "badgeText": "Civil Defence Example EMA",
+      "showCancelled": true,
+      "useProxy": false,
+      "defaultLink": "https://www.civildefence.govt.nz/",
+      "linkLabel": "civildefence.govt.nz"
+    },
+	 {
+      "enabled": true,
+      "atomUrl": "./References/pwp_nationwide_test.txt",
+      "source": "cd-atom-test2",
+      "sourceLabel": "Civil Defence Example National",
+      "badgeText": "Civil Defence Example National",
+      "showCancelled": true,
+      "useProxy": false,
+      "defaultLink": "https://www.civildefence.govt.nz/",
+      "linkLabel": "civildefence.govt.nz"
+    }],
   "showCancelledCivilDefenceAlerts": true,
   "enableEmergencyMobileAlerts": false,
   "emergencyMobileAlertUseProxy": false,
