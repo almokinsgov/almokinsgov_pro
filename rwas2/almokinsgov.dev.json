@@ -8,7 +8,7 @@
   "extensionsEnabled": true,
   "pluginConfig": {
     "rwas-map-view": {
-      "enabled": false,
+      "enabled": true,
       "defaultMode": "map",
       "transformPopup": true,
       "mapHeight": 390,
@@ -52,7 +52,7 @@
       "exposeGlobal": true,
       "globalName": "RWAS_AGENT_METADATA",
       "scriptElementId": "rwas-agent-metadata-json",
-      "renderPanel": false,
+      "renderPanel": true,
       "includeRuntime": true,
       "includeAlerts": true,
       "includeDismissedAlerts": true,
@@ -66,10 +66,10 @@
       "enabled": true,
       "exposeGlobal": true,
       "globalName": "RWAS_MCP_SERVER_CONFIG",
-      "renderPanel": false,
+      "renderPanel": true,
       "serverName": "rwas",
       "command": "node",
-      "serverScript": "./extensions/rwas-mcp-server.mjs",
+      "serverScript": "./rwas2/extensions/rwas-mcp-server.mjs",
       "metadataGlobal": "RWAS_AGENT_METADATA",
       "metadataFile": "./rwas-agent-metadata.json",
       "metadataUrl": "",
@@ -87,8 +87,8 @@
       "includeExpired": true
     },
     "rwas-admin-ui": {
-      "enabled": false,
-      "renderButton": false,
+      "enabled": true,
+      "renderButton": true,
       "slotName": "popup-footer",
       "panelTitle": "RWAS Admin",
       "storageKey": "rwas-popup-test-config-v1",
@@ -149,7 +149,7 @@
         "roadworks",
         "hazards"
       ],
-      "useProxy": false,
+      "useProxy": true,
       "proxy": "",
       "fetchTimeoutMs": 30000,
       "cacheMode": "no-store",
@@ -177,8 +177,7 @@
     "default"
   ],
   "areaDisplayOrder": [
-    "Far North District",
-    "Whangarei District"
+    "Far North District"
   ],
   "enableAlertDismissal": true,
   "enableMetServiceDismiss": false,
@@ -190,33 +189,52 @@
   "nztaEventTypes": [
     "closures",
     "warnings",
-    "roadworks",
     "hazards"
   ],
   "nztaUseProxy": false,
   "enableMetServiceAlerts": true,
-  "metServiceUseProxy": false,
+  "metServiceUseProxy": true,
   "metServiceSourceUrl": "https://raw.githubusercontent.com/almokinsgov/NZCAPFeeds/refs/heads/main/feeds/metservice-cap-atom/current.xml",
   "metServiceAtomUrl": "https://raw.githubusercontent.com/almokinsgov/NZCAPFeeds/refs/heads/main/feeds/metservice-cap-atom/current.xml",
   "metServiceDetailMode": "auto",
   "metServiceFeeds": [
     {
-      "enabled": true,
+      "enabled": false,
       "atomUrl": "./rwas2/References/latest_2025-07-28T08-21-52-472Z.xml",
       "sourceLabel": "MetService archive",
       "badgeText": "MetService",
       "useProxy": true,
-      "detailMode": "atom",
+      "detailMode": "auto",
+      "defaultLink": "https://www.metservice.com/warnings/home"
+    },
+    {
+      "enabled": false,
+      "atomUrl": "./rwas2/References/latest_2026-01-21T06-09-54-530Z.xml",
+      "sourceLabel": "MetService archive 2",
+      "badgeText": "MetService",
+      "useProxy": true,
+      "detailMode": "auto",
       "defaultLink": "https://www.metservice.com/warnings/home"
     }
   ],
   "enableCivilDefenceAlerts": true,
   "civilDefenceUseProxy": false,
   "civilDefenceAtomUrl": "https://raw.githubusercontent.com/almokinsgov/NZCAPFeeds/refs/heads/main/feeds/alert-hub-pwp/current.xml",
-  "civilDefenceAtomFeedUrl": "",
+  "civilDefenceAtomFeedUrl": "https://raw.githubusercontent.com/almokinsgov/NZCAPFeeds/refs/heads/main/feeds/alert-hub-pwp/current.xml",
   "civilDefenceFeeds": [
-   {
-      "enabled": true,
+    {
+      "enabled": false,
+      "atomUrl": "https://alerthub.civildefence.govt.nz/atom/pwp",
+      "source": "cd-atom-test",
+      "sourceLabel": "Civil Defence Atom",
+      "badgeText": "Civil Defence Atom",
+      "showCancelled": true,
+      "useProxy": true,
+      "defaultLink": "https://www.civildefence.govt.nz/",
+      "linkLabel": "civildefence.govt.nz"
+    },
+    {
+      "enabled": false,
       "atomUrl": "./rwas2/References/alerthub-atom-pwp.txt",
       "source": "cd-atom-test1",
       "sourceLabel": "Civil Defence Example EMA",
@@ -225,28 +243,18 @@
       "useProxy": false,
       "defaultLink": "https://www.civildefence.govt.nz/",
       "linkLabel": "civildefence.govt.nz"
-    },
-	 {
-      "enabled": true,
-      "atomUrl": "./rwas2/References/pwp_nationwide_test.txt",
-      "source": "cd-atom-test2",
-      "sourceLabel": "Civil Defence Example National",
-      "badgeText": "Civil Defence Example National",
-      "showCancelled": true,
-      "useProxy": false,
-      "defaultLink": "https://www.civildefence.govt.nz/",
-      "linkLabel": "civildefence.govt.nz"
-    }],
+    }
+  ],
   "showCancelledCivilDefenceAlerts": true,
   "enableEmergencyMobileAlerts": false,
   "emergencyMobileAlertUseProxy": false,
-  "emergencyMobileAlertAtomUrl": "https://raw.githubusercontent.com/almokinsgov/NZCAPFeeds/refs/heads/main/feeds/alert-hub-pwp/current.xml",
+  "emergencyMobileAlertAtomUrl": "./rwas2/References/atom-pwp.txt",
   "emergencyMobileAlertFeedUrl": "",
   "emergencyMobileAlertFeeds": [],
-  "showCancelledEmergencyMobileAlerts": false,
-  "useProxy": false,
-  "proxyEnabled": false,
-  "proxy": "http://127.0.0.1:8787/api/proxy?url=",
+  "showCancelledEmergencyMobileAlerts": true,
+  "useProxy": true,
+  "proxyEnabled": true,
+  "proxy": "https://rwas2-cap-relay.olafbig.workers.dev/v1/proxy?url=",
   "showExpiredAlerts": true,
   "requireOnsetWithinWindow": false,
   "hourWindow": 24,
@@ -256,16 +264,20 @@
   "showNonFarNorthAlerts": false,
   "showCustomGeoJsonAlerts": false,
   "areaCatalogEnabled": false,
-  "areaCatalogUrl": "./gj/catalog.json",
-  "selectedCustomGeoAreas": [],
-  "customGeoAreas": {},
+  "areaCatalogUrl": "./rwas2/gj/catalog.json",
+  "selectedCustomGeoAreas": [
+    "Ōturū Marae"
+  ],
+  "customGeoAreas": {
+    "Ōturū Marae": "https://raw.githubusercontent.com/almokinsgov/NZSHAPE/refs/heads/main/Areas/Marae/oturumarae.geojson"
+  },
   "useProxyForCustomGeoJson": false,
   "areaListLimit": 5,
   "useLinzAreas": false,
   "linzSelectedAreas": [],
   "useProxyForLinzAreas": false,
-  "linzForceBundledSource": false,
-  "linzSuburbLayerUrl": "",
+  "linzForceBundledSource": true,
+  "linzSuburbLayerUrl": "https://data.linz.govt.nz/services;key=/wfs/layer-113763/",
   "linzApiKey": "",
   "linzApiKeyParam": "api_key",
   "linzWfsTypeName": "layer-113763",
@@ -278,7 +290,7 @@
   "warningButtonLabel": "⚠️",
   "buttonTitle": "Region warnings and alerts",
   "panelTitle": "Local Warnings and Alerts",
-  "emptyMessage": "No current warnings or alerts detected for the area.",
+  "emptyMessage": "No current region-wide warnings detected for the configured alert area.",
   "autoOpen": false,
   "openOnAlert": true,
   "hideWhenEmpty": false,
