@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en-NZ">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#063f5c" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <meta name="description" content="A local-first GIS editor for creating road closure and interruption graphics." />
+    <title>Road Closure Studio</title>
+    <link rel="stylesheet" href="./vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="./src/styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "leaflet": "./vendor/leaflet/leaflet-src.esm.js",
+          "html2canvas": "./vendor/html2canvas/html2canvas.esm.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
