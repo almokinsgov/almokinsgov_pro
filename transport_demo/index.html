@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Transport Page Browser</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-block">
+        <div class="brand-title">Transport Page Browser</div>
+        <div class="brand-subtitle" id="datasetSummary">Loading pages…</div>
+      </div>
+
+      <div class="sidebar-controls">
+        <label class="search-box" for="pageSearch">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="pageSearch" type="search" placeholder="Search pages and content" autocomplete="off">
+          <kbd>/</kbd>
+        </label>
+        <label class="check-row compact">
+          <input id="showRemoved" type="checkbox">
+          <span>Show removed pages</span>
+        </label>
+      </div>
+
+      <nav class="tree" id="tree" aria-label="Transport page hierarchy"></nav>
+
+      <div class="sidebar-footer">
+        <button type="button" class="text-button" id="expandAll">Expand all</button>
+        <button type="button" class="text-button" id="collapseAll">Collapse all</button>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <button type="button" class="icon-button mobile-only" id="toggleSidebar" aria-label="Toggle page browser">☰</button>
+        <div class="page-identity">
+          <div class="eyebrow" id="breadcrumbLabel">Transport</div>
+          <h1 id="pageTitle">Select a page</h1>
+          <div id="statusLine" class="status-line"></div>
+        </div>
+        <div class="top-actions">
+          <div class="workspace-actions">
+            <button type="button" class="button primary" id="saveWorkspace">Save workspace</button>
+            <button type="button" class="button secondary" id="importWorkspace">Import workspace</button>
+            <button type="button" class="button secondary" id="exportWorkspace">Export workspace</button>
+            <button type="button" class="button ghost-danger" id="resetWorkspace" title="Discard all workspace edits and restore the bundled pages">Reset workspace</button>
+            <input id="workspaceFile" type="file" accept="application/json,.json" hidden>
+          </div>
+          <div class="page-step-actions">
+            <button type="button" class="button secondary" id="prevPage" title="Previous visible page">Previous</button>
+            <button type="button" class="button secondary" id="nextPage" title="Next visible page">Next</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="metadata-card" id="metadataCard">
+        <div class="metadata-item metadata-breadcrumb">
+          <div class="metadata-label">Breadcrumb</div>
+          <div class="metadata-value-row">
+            <div class="metadata-value" id="metaBreadcrumb"></div>
+            <button class="copy-mini" type="button" data-copy-meta="breadcrumb">Copy</button>
+          </div>
+        </div>
+        <div class="metadata-item metadata-seo">
+          <div class="metadata-label">SEO</div>
+          <div class="metadata-value-row">
+            <div class="metadata-value" id="metaSeo"></div>
+            <button class="copy-mini" type="button" data-copy-meta="seo">Copy</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="save-info-card" aria-label="Save information">
+        <div class="save-info-panel">
+          <div class="save-info-heading">
+            <div>
+              <div class="metadata-label">Page Save</div>
+              <div class="save-info-status" id="pageSaveStatus">Bundled baseline</div>
+            </div>
+            <button type="button" class="button compact-button" id="savePageTop">Save page</button>
+          </div>
+          <div class="save-info-grid">
+            <span>Last saved</span><strong id="pageLastSaved">Not manually saved</strong>
+            <span>Revision</span><strong id="pageSaveRevision">0</strong>
+            <span>Draft updated</span><strong id="pageDraftUpdated">No draft changes</strong>
+            <span>History</span><strong id="pageHistoryCount">Baseline only</strong>
+          </div>
+        </div>
+        <div class="save-info-panel">
+          <div class="save-info-heading">
+            <div>
+              <div class="metadata-label">Workspace Save</div>
+              <div class="save-info-status" id="workspaceSaveStatus">Bundled workspace</div>
+            </div>
+          </div>
+          <div class="save-info-grid">
+            <span>Last saved</span><strong id="workspaceLastSaved">Not manually saved</strong>
+            <span>Revision</span><strong id="workspaceSaveRevision">0</strong>
+            <span>Draft updated</span><strong id="workspaceDraftUpdated">No draft changes</strong>
+            <span>History</span><strong id="workspaceHistoryCount">No page history</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="workbench">
+        <div class="workbench-toolbar">
+          <div class="field-group">
+            <label for="versionSelect">Content version</label>
+            <select id="versionSelect">
+              <option value="current">Current suggested content</option>
+              <option value="commented">V2 commented content</option>
+              <option value="original">V1 original content</option>
+            </select>
+          </div>
+
+          <div class="copy-options" aria-label="Copy options">
+            <label class="check-row">
+              <input id="includeH1" type="checkbox">
+              <span>Include H1</span>
+            </label>
+            <label class="check-row">
+              <input id="includeEditorial" type="checkbox">
+              <span>Include editorial notes</span>
+            </label>
+            <label class="check-row">
+              <input id="includeImages" type="checkbox" checked>
+              <span>Include images</span>
+            </label>
+            <label class="check-row">
+              <input id="includePlaceholders" type="checkbox" checked>
+              <span>Include dynamic placeholders</span>
+            </label>
+          </div>
+
+          <div class="field-group compact-field">
+            <label for="accordionMode">Accordion copy</label>
+            <select id="accordionMode">
+              <option value="keep">Keep accordions</option>
+              <option value="expanded">Expand to headings</option>
+            </select>
+          </div>
+
+          <div class="copy-actions">
+            <button type="button" class="button primary" id="copyWysiwyg">Copy WYSIWYG</button>
+            <button type="button" class="button secondary" id="copyHtml">Copy HTML</button>
+            <button type="button" class="button secondary" id="copyText">Copy text</button>
+          </div>
+        </div>
+
+        <div class="tabbar" role="tablist" aria-label="Page content views">
+          <button type="button" class="tab active" id="tabPage" data-view="page" role="tab" aria-selected="true">Page view</button>
+          <button type="button" class="tab" id="tabCode" data-view="code" role="tab" aria-selected="false">Code view</button>
+          <button type="button" class="tab" id="tabEdit" data-view="edit" role="tab" aria-selected="false">Edit mode</button>
+          <div class="workspace-indicator" id="workspaceIndicator" title="Workspace changes are stored locally">No workspace edits</div>
+          <div class="tab-spacer"></div>
+          <div class="preview-only preview-actions" id="previewAccordionActions">
+            <button type="button" class="text-button light" id="expandAccordions">Open accordions</button>
+            <button type="button" class="text-button light" id="collapseAccordions">Close accordions</button>
+          </div>
+          <label class="check-row compact code-only" id="wrapCodeLabel" hidden>
+            <input id="wrapCode" type="checkbox" checked>
+            <span>Wrap code</span>
+          </label>
+        </div>
+
+        <div class="content-stage">
+          <article id="pageView" class="page-preview" aria-live="polite"></article>
+          <pre id="codeView" class="code-view" hidden><code></code></pre>
+
+          <section id="editView" class="edit-view" hidden aria-label="Page editor">
+            <div class="edit-metadata">
+              <label class="edit-field">
+                <span>Page name</span>
+                <input id="editName" type="text" autocomplete="off">
+              </label>
+              <label class="edit-field edit-field-wide">
+                <span>Breadcrumb</span>
+                <input id="editBreadcrumb" type="text" autocomplete="off">
+              </label>
+              <label class="edit-field edit-field-wide">
+                <span>SEO description</span>
+                <textarea id="editSeo" rows="2"></textarea>
+                <small id="seoCount">0 characters</small>
+              </label>
+              <label class="edit-field">
+                <span>Status</span>
+                <input id="editStatus" type="text" autocomplete="off">
+              </label>
+              <label class="check-row edit-removed">
+                <input id="editRemoved" type="checkbox">
+                <span>Removed from current structure</span>
+              </label>
+            </div>
+
+            <div class="editor-card">
+              <div class="editor-header">
+                <div>
+                  <strong id="editorVersionLabel">Current suggested content</strong>
+                  <span class="editor-help">Changes apply to the content version selected above.</span>
+                </div>
+                <div class="editor-mode-switch" role="group" aria-label="Editor mode">
+                  <button type="button" class="small-toggle active" id="visualEditorMode">Visual</button>
+                  <button type="button" class="small-toggle" id="sourceEditorMode">HTML source</button>
+                </div>
+              </div>
+
+              <div class="format-toolbar" id="formatToolbar" aria-label="Formatting tools">
+                <select id="formatBlock" aria-label="Text style">
+                  <option value="p">Paragraph</option>
+                  <option value="h2">Heading 2</option>
+                  <option value="h3">Heading 3</option>
+                  <option value="h4">Heading 4</option>
+                </select>
+                <button type="button" data-command="bold" title="Bold"><strong>B</strong></button>
+                <button type="button" data-command="italic" title="Italic"><em>I</em></button>
+                <button type="button" data-command="underline" title="Underline"><u>U</u></button>
+                <button type="button" data-command="insertUnorderedList" title="Bullet list">Bullets</button>
+                <button type="button" data-command="insertOrderedList" title="Numbered list">Numbers</button>
+                <button type="button" id="insertLink" title="Add link">Link</button>
+                <button type="button" data-command="unlink" title="Remove link">Unlink</button>
+                <button type="button" id="insertAccordion" title="Insert an accordion block">Accordion</button>
+                <button type="button" data-command="removeFormat" title="Remove inline formatting">Clear format</button>
+              </div>
+
+              <div id="visualEditor" class="page-preview editor-surface" contenteditable="true" spellcheck="true" aria-label="Visual page content editor"></div>
+              <textarea id="sourceEditor" class="source-editor" spellcheck="false" hidden aria-label="HTML source editor"></textarea>
+
+              <div class="editor-footer">
+                <div class="editor-save-state">
+                  <strong id="editSaveState">Draft autosaved</strong>
+                  <span>Autosave protects drafts. Save page records a manual checkpoint. Ctrl+S saves the page.</span>
+                </div>
+                <div class="editor-actions">
+                  <button type="button" class="button secondary" id="undoPage">Undo page</button>
+                  <button type="button" class="button secondary" id="redoPage">Redo page</button>
+                  <button type="button" class="button secondary" id="resetVersion">Reset this content version</button>
+                  <button type="button" class="button secondary" id="resetPage">Reset page</button>
+                  <button type="button" class="button primary" id="savePage">Save page</button>
+                </div>
+              </div>
+            </div>
+
+            <section class="history-card" id="historyCard" aria-label="Page edit history">
+              <div class="history-header">
+                <div>
+                  <div class="metadata-label">Edit History</div>
+                  <strong id="historySummary">Bundled baseline</strong>
+                  <span>Automatic page snapshots and manual save checkpoints are kept with the workspace.</span>
+                </div>
+                <div class="history-header-actions">
+                  <button type="button" class="button secondary compact-history" id="historyUndo">Undo</button>
+                  <button type="button" class="button secondary compact-history" id="historyRedo">Redo</button>
+                </div>
+              </div>
+              <div class="history-list" id="historyList"></div>
+            </section>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="pages.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
