@@ -1,0 +1,16 @@
+{
+  "version": "0.5.3",
+  "replacement_section_counts": {
+    "East Mtce Contract": 9,
+    "North Contract Area @ July 2018": 1,
+    "North Mtce Contract": 3,
+    "North West Mtce Contract": 1,
+    "South Contract Area @ July 2018": 7,
+    "South West Mtce Contract": 3,
+    "Transfield Services (NZ) Ltd": 757
+  },
+  "roads_changed": 764,
+  "sections_before": 2467,
+  "sections_after": 2463,
+  "sections_merged": 4
+}
