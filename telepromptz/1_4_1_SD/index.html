@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="A mobile-friendly teleprompter with per-script player settings, Google Drive sync, camera recording, viewport-synchronised TTS pacing and voice controls.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Teleprompter Player</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script async defer src="https://accounts.google.com/gsi/client"></script>
+  <script defer src="storage.js"></script>
+  <script defer src="google-drive.js"></script>
+  <script defer src="sync-safety.js"></script>
+  <script defer src="face-controls.js"></script>
+  <script defer src="speech-controls.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <header class="app-header">
+      <div class="brand-group">
+        <button class="icon-button mobile-only" id="openScriptListButton" type="button" aria-label="Open scripts">
+          <span aria-hidden="true">☰</span>
+        </button>
+        <div>
+          <div class="eyebrow">Standalone Workspace</div>
+          <h1>Teleprompter</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="save-state" id="saveState" aria-live="polite">Saved locally</span>
+        <button class="button button-secondary" id="openImportExportButton" type="button">Import / Export</button>
+        <button class="button button-secondary google-account-button" id="googleDriveButton" type="button">Google Drive</button>
+        <button class="button button-secondary" id="openSettingsButton" type="button">Settings</button>
+        <button class="button button-primary" id="openPlayerButton" type="button">Open Player</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="scripts-panel" id="scriptsPanel" aria-label="Scripts manager">
+        <div class="panel-header">
+          <div>
+            <div class="eyebrow">Script Manager</div>
+            <h2>Scripts</h2>
+          </div>
+          <button class="icon-button" id="closeScriptListButton" type="button" aria-label="Close scripts">×</button>
+        </div>
+
+        <div class="scripts-toolbar">
+          <button class="button button-primary grow" id="newScriptButton" type="button">New Script</button>
+          <button class="icon-button" id="duplicateScriptButton" type="button" aria-label="Duplicate selected script" title="Duplicate script">⧉</button>
+        </div>
+
+        <div class="mobile-utility-actions mobile-only">
+          <button class="button button-secondary grow" id="mobileImportExportButton" type="button">Import / Export</button>
+          <button class="button button-secondary grow" id="mobileGoogleDriveButton" type="button">Google Drive</button>
+          <button class="button button-secondary grow" id="mobileSettingsButton" type="button">Settings</button>
+        </div>
+
+        <label class="field compact-field">
+          <span class="sr-only">Search scripts</span>
+          <input id="scriptSearchInput" type="search" placeholder="Search scripts">
+        </label>
+
+        <div class="script-list" id="scriptList" role="list"></div>
+      </aside>
+
+      <section class="editor-panel" aria-label="Script editor">
+        <div class="editor-topbar">
+          <div class="script-status-row">
+            <span class="status-pill" id="wordCount">0 words</span>
+            <span class="status-pill" id="durationEstimate">0 min</span>
+            <span class="status-pill" id="updatedAt">Not edited</span>
+          </div>
+          <div class="editor-actions">
+            <button class="button button-ghost" id="resetScriptPlayerSettingsButton" type="button" title="Reset this script to the current player defaults">Reset Player Settings</button>
+            <button class="button button-ghost" id="deleteScriptButton" type="button">Delete</button>
+          </div>
+        </div>
+
+        <label class="field title-field">
+          <span class="sr-only">Script title</span>
+          <input id="scriptTitleInput" type="text" maxlength="120" placeholder="Untitled script">
+        </label>
+
+        <label class="field script-body-field">
+          <span class="sr-only">Script content</span>
+          <textarea id="scriptBodyInput" spellcheck="true" placeholder="Write or paste your script here..."></textarea>
+        </label>
+
+        <div class="editor-footer">
+          <div class="hint">Player speed, spacing, camera and speech controls are remembered separately for this script.</div>
+          <button class="button button-primary" id="editorPlayButton" type="button">Play Script</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <section class="player-screen" id="playerScreen" hidden aria-label="Teleprompter player">
+    <div class="player-stage" id="playerStage">
+      <div class="camera-layer" id="cameraLayer" hidden aria-hidden="true">
+        <video class="camera-video" id="cameraVideo" autoplay muted playsinline></video>
+        <div class="camera-dim" id="cameraDim"></div>
+      </div>
+      <div class="focus-guide" id="focusGuide" aria-hidden="true"></div>
+      <div class="prompt-viewport" id="promptViewport">
+        <article class="prompt-content" id="promptContent"></article>
+      </div>
+
+      <div class="countdown-overlay" id="countdownOverlay" hidden aria-live="assertive">
+        <span id="countdownValue"></span>
+      </div>
+
+      <div class="player-topbar player-chrome" id="playerTopbar">
+        <div class="player-script-name" id="playerScriptName">Untitled script</div>
+        <div class="player-top-actions">
+          <span class="player-status voice-status" id="voiceControlStatus" hidden aria-live="polite">Voice controls off</span>
+          <span class="player-status face-status" id="faceControlStatus" hidden aria-live="polite">Face controls off</span>
+          <span class="recording-status" id="recordingStatus" hidden aria-live="polite"><span class="recording-dot" aria-hidden="true"></span><span id="recordingTime">00:00</span></span>
+          <button class="icon-button player-icon-button" id="recordButton" type="button" aria-label="Start camera recording" title="Record camera feed" aria-pressed="false">●</button>
+          <button class="icon-button player-icon-button" id="cameraTopButton" type="button" aria-label="Toggle camera background" title="Camera background" aria-pressed="false">◉</button>
+          <button class="icon-button player-icon-button" id="wakeLockButton" type="button" aria-label="Keep screen awake" title="Keep screen awake">☀</button>
+          <button class="icon-button player-icon-button" id="fullscreenButton" type="button" aria-label="Toggle fullscreen" title="Fullscreen">⛶</button>
+          <button class="icon-button player-icon-button" id="closePlayerButton" type="button" aria-label="Close player" title="Close">×</button>
+        </div>
+      </div>
+
+      <div class="player-controls player-chrome" id="playerControls">
+        <div class="transport-row">
+          <button class="control-button" id="restartButton" type="button" aria-label="Restart">↺</button>
+          <button class="control-button primary-control" id="playPauseButton" type="button">Play</button>
+          <button class="control-button" id="jumpBackButton" type="button" aria-label="Jump back">−10s</button>
+          <button class="control-button" id="jumpForwardButton" type="button" aria-label="Jump forward">+10s</button>
+        </div>
+
+        <div class="controls-grid">
+          <label class="control-field">
+            <span>Speed <strong id="speedValue">35</strong></span>
+            <input id="speedRange" type="range" min="5" max="140" step="1" value="35">
+          </label>
+          <label class="control-field">
+            <span>Text <strong id="fontSizeValue">54</strong></span>
+            <input id="fontSizeRange" type="range" min="24" max="120" step="1" value="54">
+          </label>
+          <label class="control-field">
+            <span>Line <strong id="lineHeightValue">1.45</strong></span>
+            <input id="lineHeightRange" type="range" min="1.05" max="2" step="0.05" value="1.45">
+          </label>
+          <label class="control-field">
+            <span>Paragraph <strong id="paragraphSpacingValue">0.45</strong> em</span>
+            <input id="paragraphSpacingRange" type="range" min="0" max="1.5" step="0.05" value="0.45">
+          </label>
+          <label class="control-field">
+            <span>Width <strong id="textWidthValue">82</strong>%</span>
+            <input id="textWidthRange" type="range" min="45" max="100" step="1" value="82">
+          </label>
+          <label class="control-field camera-control-field" id="cameraOpacityField" hidden>
+            <span>Camera <strong id="cameraOpacityValue">65</strong>%</span>
+            <input id="cameraOpacityRange" type="range" min="10" max="100" step="1" value="65">
+          </label>
+          <label class="control-field camera-control-field" id="cameraDimField" hidden>
+            <span>Dim <strong id="cameraDimValue">25</strong>%</span>
+            <input id="cameraDimRange" type="range" min="0" max="85" step="1" value="25">
+          </label>
+          <label class="control-field" id="ttsPaceField" hidden>
+            <span>TTS pace <strong id="ttsPaceValue">130</strong> WPM</span>
+            <input id="ttsPaceRange" type="range" min="80" max="220" step="5" value="130">
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <button class="chip-button" id="alignButton" type="button">Align: Left</button>
+          <button class="chip-button" id="mirrorHorizontalButton" type="button" aria-pressed="false">Mirror H</button>
+          <button class="chip-button" id="mirrorVerticalButton" type="button" aria-pressed="false">Mirror V</button>
+          <button class="chip-button" id="focusGuideButton" type="button" aria-pressed="true">Focus Guide</button>
+          <button class="chip-button" id="cameraButton" type="button" aria-pressed="false">Camera</button>
+          <button class="chip-button" id="switchCameraButton" type="button" hidden>Switch Camera</button>
+          <button class="chip-button" id="mirrorCameraButton" type="button" aria-pressed="true" hidden>Mirror Camera</button>
+          <button class="chip-button" id="faceControlsButton" type="button" aria-pressed="false" hidden>Face Controls</button>
+          <button class="chip-button" id="ttsButton" type="button" aria-pressed="false">TTS Guide</button>
+          <button class="chip-button" id="voiceControlsButton" type="button" aria-pressed="false">Voice Controls</button>
+          <button class="chip-button" id="controlsLockButton" type="button" aria-pressed="false">Lock Controls</button>
+        </div>
+      </div>
+
+      <button class="chrome-reveal-zone" id="chromeRevealZone" type="button" aria-label="Show or hide player controls"></button>
+    </div>
+  </section>
+
+  <dialog class="modal" id="settingsDialog">
+    <form method="dialog" class="modal-card" id="settingsForm">
+      <div class="modal-header">
+        <div>
+          <div class="eyebrow">Preferences</div>
+          <h2>Settings</h2>
+        </div>
+        <button class="icon-button" value="cancel" aria-label="Close settings">×</button>
+      </div>
+
+      <div class="settings-grid">
+        <section class="settings-section">
+          <h3>Profile</h3>
+          <label class="field">
+            <span>Display name</span>
+            <input id="profileNameInput" type="text" maxlength="80" placeholder="Your name">
+          </label>
+          <div class="provider-card">
+            <div>
+              <strong>Storage provider</strong>
+              <span id="storageProviderName">Local browser storage</span>
+            </div>
+            <span class="status-pill" id="storageProviderStatus">Google Drive available</span>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <h3>Player Defaults</h3>
+          <p>Used when a new script is created. Existing scripts keep their own player settings.</p>
+          <label class="field range-field">
+            <span>Scroll speed <output id="defaultSpeedOutput">35</output></span>
+            <input id="defaultSpeedInput" type="range" min="5" max="140" step="1">
+          </label>
+          <label class="field range-field">
+            <span>Font size <output id="defaultFontSizeOutput">54</output> px</span>
+            <input id="defaultFontSizeInput" type="range" min="24" max="120" step="1">
+          </label>
+          <label class="field range-field">
+            <span>Line height <output id="defaultLineHeightOutput">1.45</output></span>
+            <input id="defaultLineHeightInput" type="range" min="1.05" max="2" step="0.05">
+          </label>
+          <label class="field range-field">
+            <span>Paragraph spacing <output id="defaultParagraphSpacingOutput">0.45</output> em</span>
+            <input id="defaultParagraphSpacingInput" type="range" min="0" max="1.5" step="0.05">
+          </label>
+          <label class="field range-field">
+            <span>Text width <output id="defaultTextWidthOutput">82</output>%</span>
+            <input id="defaultTextWidthInput" type="range" min="45" max="100" step="1">
+          </label>
+          <label class="field">
+            <span>Countdown</span>
+            <select id="countdownSelect">
+              <option value="0">None</option>
+              <option value="3">3 seconds</option>
+              <option value="5">5 seconds</option>
+              <option value="10">10 seconds</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <h3>Camera Background</h3>
+          <label class="switch-row">
+            <span>
+              <strong>Use camera by default</strong>
+              <small>Start the camera when the player opens.</small>
+            </span>
+            <input id="defaultCameraEnabledInput" type="checkbox">
+          </label>
+          <label class="field range-field">
+            <span>Camera opacity <output id="defaultCameraOpacityOutput">65</output>%</span>
+            <input id="defaultCameraOpacityInput" type="range" min="10" max="100" step="1">
+          </label>
+          <label class="field range-field">
+            <span>Camera dim <output id="defaultCameraDimOutput">25</output>%</span>
+            <input id="defaultCameraDimInput" type="range" min="0" max="85" step="1">
+          </label>
+          <label class="switch-row">
+            <span>
+              <strong>Mirror front camera</strong>
+              <small>Show the preview like a selfie camera.</small>
+            </span>
+            <input id="defaultCameraMirrorInput" type="checkbox">
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <h3>Face Controls</h3>
+          <p>Face processing runs on the device. The MediaPipe model is loaded when face controls are first enabled.</p>
+          <label class="switch-row">
+            <span>
+              <strong>Enable face controls by default</strong>
+              <small>Camera access is required.</small>
+            </span>
+            <input id="defaultFaceControlsInput" type="checkbox">
+          </label>
+          <label class="field">
+            <span>Smile</span>
+            <select id="smileActionSelect" class="face-action-select"></select>
+          </label>
+          <label class="field">
+            <span>Mouth open</span>
+            <select id="mouthOpenActionSelect" class="face-action-select"></select>
+          </label>
+          <label class="field">
+            <span>Blink</span>
+            <select id="blinkActionSelect" class="face-action-select"></select>
+          </label>
+          <label class="field">
+            <span>Brows raised</span>
+            <select id="browRaiseActionSelect" class="face-action-select"></select>
+          </label>
+          <label class="field range-field">
+            <span>Trigger sensitivity <output id="faceThresholdOutput">55</output>%</span>
+            <input id="faceThresholdInput" type="range" min="30" max="85" step="1">
+          </label>
+          <label class="field">
+            <span>Hold before triggering</span>
+            <select id="faceHoldSelect">
+              <option value="200">0.2 seconds</option>
+              <option value="350">0.35 seconds</option>
+              <option value="500">0.5 seconds</option>
+              <option value="750">0.75 seconds</option>
+              <option value="1000">1 second</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Trigger cooldown</span>
+            <select id="faceCooldownSelect">
+              <option value="1000">1 second</option>
+              <option value="1500">1.5 seconds</option>
+              <option value="2000">2 seconds</option>
+              <option value="3000">3 seconds</option>
+              <option value="5000">5 seconds</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Detection rate</span>
+            <select id="faceRateSelect">
+              <option value="3">Power saver</option>
+              <option value="5">Balanced</option>
+              <option value="8">Responsive</option>
+            </select>
+          </label>
+        </section>
+
+
+        <section class="settings-section">
+          <h3>Recording</h3>
+          <p>Record the raw camera feed. Teleprompter text and controls are never burned into the saved video.</p>
+          <label class="switch-row">
+            <span>
+              <strong>Include microphone audio</strong>
+              <small>Records your microphone with the camera feed. TTS is not directly mixed into the file.</small>
+            </span>
+            <input id="recordIncludeAudioInput" type="checkbox">
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <h3>TTS Pace Guide</h3>
+          <p>Read each sentence only when it reaches the teleprompter reading zone so the guide follows the scrolling text instead of running ahead.</p>
+          <label class="switch-row">
+            <span>
+              <strong>Enable TTS guide by default</strong>
+              <small>Speech is triggered by text reaching the reading zone and pauses with the player.</small>
+            </span>
+            <input id="defaultTtsEnabledInput" type="checkbox">
+          </label>
+          <label class="field range-field">
+            <span>Target pace <output id="ttsPaceOutput">130</output> WPM</span>
+            <input id="ttsPaceInput" type="range" min="80" max="220" step="5">
+          </label>
+          <label class="field range-field">
+            <span>Guide volume <output id="ttsVolumeOutput">35</output>%</span>
+            <input id="ttsVolumeInput" type="range" min="0" max="100" step="5">
+          </label>
+          <label class="switch-row">
+            <span>
+              <strong>Match scroll speed to TTS pace</strong>
+              <small>Estimate a scroll speed from script length, layout and target WPM.</small>
+            </span>
+            <input id="ttsSyncScrollInput" type="checkbox">
+          </label>
+          <label class="field">
+            <span>Voice</span>
+            <select id="ttsVoiceSelect">
+              <option value="">System default</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <h3>Voice Controls</h3>
+          <p>Use spoken commands for scrolling and recording. A command prefix is recommended to avoid words in the script being treated as controls.</p>
+          <label class="switch-row">
+            <span>
+              <strong>Enable voice controls by default</strong>
+              <small>Speech recognition requires microphone access and browser support.</small>
+            </span>
+            <input id="defaultVoiceControlsInput" type="checkbox">
+          </label>
+          <label class="switch-row">
+            <span>
+              <strong>Require command prefix</strong>
+              <small>For example, say “prompter pause” instead of “pause”.</small>
+            </span>
+            <input id="voiceRequirePrefixInput" type="checkbox">
+          </label>
+          <label class="field">
+            <span>Command prefix</span>
+            <input id="voicePrefixInput" type="text" maxlength="30" placeholder="prompter">
+          </label>
+          <label class="switch-row">
+            <span>
+              <strong>Start on detected speech</strong>
+              <small>Optional voice activity mode. Any detected speech can start scrolling.</small>
+            </span>
+            <input id="voiceStartOnSpeechInput" type="checkbox">
+          </label>
+          <label class="field">
+            <span>Pause after silence</span>
+            <select id="voicePauseSilenceSelect">
+              <option value="0">Disabled</option>
+              <option value="2000">2 seconds</option>
+              <option value="3000">3 seconds</option>
+              <option value="5000">5 seconds</option>
+              <option value="8000">8 seconds</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Recognition language</span>
+            <select id="voiceLanguageSelect">
+              <option value="en-NZ">English (New Zealand)</option>
+              <option value="en-AU">English (Australia)</option>
+              <option value="en-GB">English (United Kingdom)</option>
+              <option value="en-US">English (United States)</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="settings-section">
+          <h3>Behaviour</h3>
+          <label class="switch-row">
+            <span>
+              <strong>Auto-hide controls</strong>
+              <small>Hide player controls while the script is moving.</small>
+            </span>
+            <input id="autoHideControlsInput" type="checkbox">
+          </label>
+          <label class="switch-row">
+            <span>
+              <strong>Focus guide</strong>
+              <small>Show a subtle reading target across the player.</small>
+            </span>
+            <input id="defaultFocusGuideInput" type="checkbox">
+          </label>
+          <label class="switch-row">
+            <span>
+              <strong>Keep screen awake</strong>
+              <small>Use the Wake Lock API when supported.</small>
+            </span>
+            <input id="defaultWakeLockInput" type="checkbox">
+          </label>
+        </section>
+      </div>
+
+      <div class="modal-footer">
+        <button class="button button-secondary" value="cancel">Cancel</button>
+        <button class="button button-primary" id="saveSettingsButton" value="default">Save Settings</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal account-modal" id="googleDriveDialog">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="eyebrow">Cloud Workspace</div>
+          <h2>Google Drive</h2>
+        </div>
+        <button class="icon-button" id="closeGoogleDriveButton" type="button" aria-label="Close Google Drive">×</button>
+      </div>
+
+      <div class="settings-grid account-grid">
+        <section class="settings-section" id="googleSignedOutPanel">
+          <h3>Sign In And Sync</h3>
+          <p>Connect your Google account to keep scripts, player settings, preferences and profile data in the app's private Google Drive application-data folder.</p>
+          <p class="account-origin-note" id="googleOriginNote"></p>
+          <button class="button button-primary" id="googleSignInButton" type="button">Connect Google Account</button>
+        </section>
+
+        <section class="settings-section" id="googleSignedInPanel" hidden>
+          <div class="google-profile">
+            <img class="google-avatar" id="googleProfileImage" alt="" hidden>
+            <div>
+              <h3 id="googleProfileName">Google Account</h3>
+              <p id="googleProfileEmail"></p>
+            </div>
+          </div>
+          <div class="cloud-status-row">
+            <span class="status-pill" id="googleSyncStatus" aria-live="polite">Not synced</span>
+          </div>
+          <p>Local browser storage remains available offline. When connected, changes are also synced to Google Drive.</p>
+
+          <div class="sync-review" id="googleReconcilePanel" hidden>
+            <strong>Sync Review Needed</strong>
+            <p id="googleReconcileMessage">This browser and Google Drive contain different workspace data.</p>
+            <div class="button-stack">
+              <button class="button button-primary" id="googleUseDriveButton" type="button">Use Drive Workspace</button>
+              <button class="button button-secondary" id="googleMergeWorkspacesButton" type="button">Merge Both Workspaces</button>
+              <button class="button button-danger" id="googleReplaceDriveButton" type="button">Replace Drive With This Browser</button>
+            </div>
+            <small>Nothing is overwritten until you choose an option. Merge keeps the Drive workspace and adds local scripts without deleting either copy.</small>
+          </div>
+
+          <div class="sync-recovery" id="googleRecoveryPanel" hidden>
+            <strong>Local Recovery Copy Available</strong>
+            <p id="googleRecoveryMessage"></p>
+            <button class="button button-secondary" id="googleRestoreRecoveryButton" type="button">Restore Previous Local Copy</button>
+          </div>
+
+          <div class="button-stack">
+            <button class="button button-primary" id="googleSyncNowButton" type="button">Sync Now</button>
+            <button class="button button-secondary" id="googleSignOutButton" type="button">Disconnect Google</button>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <h3>OAuth Configuration</h3>
+          <p>Client ID</p>
+          <code class="client-id-display" id="googleClientIdDisplay"></code>
+          <p class="account-help">For hosted use, add this PWA's exact scheme and host to the OAuth client's Authorized JavaScript origins. Local development can use localhost.</p>
+        </section>
+      </div>
+
+      <div class="modal-footer">
+        <button class="button button-secondary" id="doneGoogleDriveButton" type="button">Done</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="modal" id="importExportDialog">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <div class="eyebrow">Portable Data</div>
+          <h2>Import / Export</h2>
+        </div>
+        <button class="icon-button" id="closeImportExportButton" type="button" aria-label="Close import and export">×</button>
+      </div>
+
+      <div class="io-grid">
+        <section class="settings-section">
+          <h3>Import</h3>
+          <p>Import plain text, Markdown, a script JSON file or a full workspace backup.</p>
+          <input id="importFileInput" type="file" accept=".txt,.md,.markdown,.json,text/plain,text/markdown,application/json" hidden multiple>
+          <button class="button button-primary" id="chooseImportButton" type="button">Choose Files</button>
+        </section>
+        <section class="settings-section">
+          <h3>Current Script</h3>
+          <p>Export the selected script for editing, sharing or backup.</p>
+          <div class="button-stack">
+            <button class="button button-secondary" id="exportScriptTextButton" type="button">Export TXT</button>
+            <button class="button button-secondary" id="exportScriptJsonButton" type="button">Export JSON</button>
+          </div>
+        </section>
+        <section class="settings-section">
+          <h3>Workspace Backup</h3>
+          <p>Export all scripts, settings, profile data and preferences in one JSON file.</p>
+          <button class="button button-secondary" id="exportWorkspaceButton" type="button">Export Workspace</button>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button class="button button-secondary" id="doneImportExportButton" type="button">Done</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite"></div>
+
+  <template id="scriptItemTemplate">
+    <button class="script-item" type="button" role="listitem">
+      <span class="script-item-title"></span>
+      <span class="script-item-meta"></span>
+    </button>
+  </template>
+</body>
+</html>
