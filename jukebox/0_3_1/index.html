@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <title>Game Night Jukebox</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="site-header">
+      <div>
+        <p class="eyebrow">Shared Spotify Queue</p>
+        <h1>Game Night Jukebox</h1>
+        <p class="version-label">v0.3.1 Static</p>
+      </div>
+      <div id="connectionBadge" class="status-badge">Not in a room</div>
+    </header>
+
+    <section id="landingView" class="landing-grid">
+      <article class="panel hero-panel">
+        <p class="eyebrow">Host</p>
+        <h2>Start A Jukebox</h2>
+        <p>Create a peer-to-peer room, connect one Spotify Premium account and choose how your group controls the queue.</p>
+        <label class="field">
+          <span>Your name</span>
+          <input id="hostNameInput" type="text" maxlength="32" value="Host" autocomplete="nickname">
+        </label>
+        <label class="field">
+          <span>Friend requests</span>
+          <select id="requestModeInput">
+            <option value="open">Go straight to the queue</option>
+            <option value="approval">Host approves suggestions first</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Queue mode</span>
+          <select id="queueModeInput">
+            <option value="democratic">Democratic: most bumps plays first</option>
+            <option value="roundRobin">Round robin: take turns between requesters</option>
+            <option value="hostCurated">Host curated: host controls the order</option>
+          </select>
+        </label>
+        <div class="two-field-grid">
+          <label class="field">
+            <span>Room PIN</span>
+            <input id="roomPinCreateInput" type="password" inputmode="numeric" maxlength="8" pattern="[0-9]*" placeholder="Optional, 4 to 8 digits" autocomplete="new-password">
+          </label>
+          <label class="field">
+            <span>Request cooldown</span>
+            <div class="input-with-suffix">
+              <input id="requestCooldownInput" type="number" min="0" max="600" step="5" value="0" inputmode="numeric">
+              <span>sec</span>
+            </div>
+          </label>
+        </div>
+        <button id="createRoomButton" class="button primary" type="button">Create room</button>
+      </article>
+
+      <article class="panel">
+        <p class="eyebrow">Friends</p>
+        <h2>Join A Room</h2>
+        <p>Friends do not need Spotify accounts. They connect directly to the host browser using the room code, a nickname and the PIN if enabled.</p>
+        <label class="field">
+          <span>Room code</span>
+          <input id="roomCodeInput" type="text" maxlength="8" inputmode="text" autocomplete="off" placeholder="AB12CD34">
+        </label>
+        <label class="field">
+          <span>Nickname</span>
+          <input id="nicknameInput" type="text" maxlength="32" autocomplete="nickname" placeholder="Player one">
+        </label>
+        <label id="roomPinJoinField" class="field">
+          <span>Room PIN <span class="muted normal-weight">(if required)</span></span>
+          <input id="roomPinJoinInput" type="password" inputmode="numeric" maxlength="8" pattern="[0-9]*" autocomplete="current-password" placeholder="PIN">
+        </label>
+        <p id="joinMessage" class="muted small"></p>
+        <button id="joinRoomButton" class="button" type="button">Join room</button>
+      </article>
+    </section>
+
+    <section id="roomView" class="room-layout hidden" aria-live="polite">
+      <section class="main-column">
+        <article id="nowPlayingPanel" class="panel now-playing">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Now Playing</p>
+              <h2 id="nowPlayingTitle">Nothing yet</h2>
+              <p id="nowPlayingMeta" class="muted">Add a track to get started.</p>
+            </div>
+            <div id="nowPlayingArt" class="album-art placeholder-art" aria-hidden="true">♪</div>
+          </div>
+          <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
+          <div class="progress-meta"><span id="progressCurrent">0:00</span><span id="progressDuration">0:00</span></div>
+          <div id="guestPlaybackControls" class="guest-playback-controls hidden">
+            <button id="guestStartButton" class="button primary" type="button">Start queue</button>
+            <p id="guestPlaybackHint" class="muted small">Anyone in the room can restart playback when it is stopped.</p>
+          </div>
+        </article>
+
+        <article class="panel search-panel">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">Find Music</p>
+              <h2>Search Spotify</h2>
+            </div>
+            <div class="pill-group">
+              <span id="requestModeBadge" class="pill">Open queue</span>
+              <span id="cooldownBadge" class="pill hidden">0 sec cooldown</span>
+            </div>
+          </div>
+          <form id="searchForm" class="search-form">
+            <label class="sr-only" for="searchInput">Search for a song or artist</label>
+            <input id="searchInput" type="search" placeholder="Song, artist or album" autocomplete="off">
+            <button class="button primary" type="submit">Search</button>
+          </form>
+          <p id="searchMessage" class="muted small"></p>
+          <div id="searchResults" class="track-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">Up Next</p>
+              <h2>The Queue</h2>
+            </div>
+            <div class="pill-group">
+              <span id="queueModeBadge" class="pill active">Democratic</span>
+              <span id="queueCount" class="count-badge">0</span>
+            </div>
+          </div>
+          <p id="queueModeHelp" class="muted small">Bumps decide the order. Older requests win ties.</p>
+          <div id="queueList" class="queue-list"></div>
+        </article>
+
+        <article id="suggestionsPanel" class="panel hidden">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">Waiting Room</p>
+              <h2>Suggestions</h2>
+            </div>
+            <span id="suggestionCount" class="count-badge">0</span>
+          </div>
+          <div id="suggestionList" class="queue-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">Played</p>
+              <h2>Recent History</h2>
+            </div>
+            <span id="historyCount" class="count-badge">0</span>
+          </div>
+          <div id="historyList" class="track-list"></div>
+        </article>
+      </section>
+
+      <aside class="side-column">
+        <article class="panel room-card">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">Room</p>
+              <strong id="roomCodeDisplay" class="room-code">------</strong>
+            </div>
+            <span id="pinBadge" class="pill">No PIN</span>
+          </div>
+          <div class="room-actions">
+            <button id="copyRoomButton" class="button small-button" type="button">Copy invite</button>
+            <button id="showQrButton" class="button small-button" type="button">Show QR</button>
+          </div>
+          <p id="roomShareHint" class="muted small">Share this code with your friends.</p>
+          <div id="qrPanel" class="qr-panel hidden">
+            <img id="roomQrImage" alt="QR code for the jukebox room invite" referrerpolicy="no-referrer">
+            <p id="qrMessage" class="muted tiny">The QR contains the invite link only. Share the PIN separately.</p>
+          </div>
+          <button id="leaveRoomButton" class="button ghost full-width" type="button">Leave room</button>
+        </article>
+
+        <article id="hostPanel" class="panel hidden">
+          <div class="section-heading compact-heading">
+            <div>
+              <p class="eyebrow">Host Controls</p>
+              <h2>Playback</h2>
+            </div>
+            <span id="spotifyBadge" class="pill">Not connected</span>
+          </div>
+          <button id="connectSpotifyButton" class="button spotify full-width" type="button">Connect Spotify</button>
+
+          <div id="browserPlayerPanel" class="browser-player-box">
+            <div>
+              <strong>Browser Player</strong>
+              <p id="browserPlayerStatus" class="muted small">Make this jukebox tab a Spotify Connect device.</p>
+            </div>
+            <button id="browserPlayerButton" class="button full-width" type="button">Use this browser</button>
+            <button id="activateBrowserAudioButton" class="button ghost full-width hidden" type="button">Activate browser audio</button>
+          </div>
+
+          <label class="field">
+            <span>Playback device</span>
+            <select id="deviceSelect"><option value="">Use active Spotify device</option></select>
+          </label>
+          <button id="refreshDevicesButton" class="button full-width" type="button">Refresh devices</button>
+          <div class="host-control-grid">
+            <button id="playNextButton" class="button primary" type="button">Play next</button>
+            <button id="pauseResumeButton" class="button" type="button">Pause</button>
+            <button id="syncPlaybackButton" class="button" type="button">Sync</button>
+          </div>
+          <label class="switch-row">
+            <input id="autoPlayInput" type="checkbox" checked>
+            <span>Auto play the next jukebox track</span>
+          </label>
+          <label class="field">
+            <span>Friend requests</span>
+            <select id="hostRequestModeInput">
+              <option value="open">Add directly to queue</option>
+              <option value="approval">Require host approval</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Queue mode</span>
+            <select id="hostQueueModeInput">
+              <option value="democratic">Democratic</option>
+              <option value="roundRobin">Round robin</option>
+              <option value="hostCurated">Host curated</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Guest request cooldown</span>
+            <div class="input-with-suffix">
+              <input id="hostCooldownInput" type="number" min="0" max="600" step="5" value="0" inputmode="numeric">
+              <span>sec</span>
+            </div>
+          </label>
+          <p id="hostMessage" class="muted small"></p>
+        </article>
+
+        <article class="panel compact-panel">
+          <p class="eyebrow">Queue Modes</p>
+          <dl class="mode-guide">
+            <div><dt>Democratic</dt><dd>Most bumps plays first.</dd></div>
+            <div><dt>Round robin</dt><dd>Requesters take turns. Bumps pick their track for that turn.</dd></div>
+            <div><dt>Host curated</dt><dd>The host moves tracks into the preferred order.</dd></div>
+          </dl>
+        </article>
+      </aside>
+    </section>
+
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  </main>
+  <script src="static-config.js"></script>
+  <script src="static-app.js" type="module"></script>
+</body>
+</html>
