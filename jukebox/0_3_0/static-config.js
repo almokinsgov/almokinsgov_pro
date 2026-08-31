@@ -1,6 +1,6 @@
 window.JUKEBOX_STATIC_CONFIG = {
   "version": "0.3.0-static",
-  "spotifyClientId": "480cc1cd7bad4c86baa08a8d9c0f46a9",
+  "spotifyClientId": "fdc4249f1fd24555a5aaef131c4c4cec",
   "spotifyRedirectUri": "https://almokinsgov.dev/jukebox/0_3_0/",
   "mockMode": false,
   "peerPrefix": "gnj-v030-",
