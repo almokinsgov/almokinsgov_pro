@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rāhui Map Editor v0.6.3</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-app="rahui-editor" class="editor-page">
+  <header class="site-header">
+    <div class="brand">
+      <h1>Rāhui Map Editor</h1>
+      <p>Create, locate, edit, publish and manage rāhui.</p>
+    </div>
+    <div class="header-actions">
+      <span class="unsaved" id="unsavedIndicator" hidden>Unsaved changes</span>
+      <button class="btn small" id="newRahui" type="button">New rāhui</button>
+      <button class="btn small" id="openImport" type="button">Import</button>
+      <button class="btn small" id="exportWorkspace" type="button">Export</button>
+      <button class="btn small" id="openSettings" type="button">Settings</button>
+      
+    </div>
+  </header>
+
+  <main class="editor-shell">
+    <aside class="editor-list">
+      <div class="editor-list-toolbar">
+        <div class="field">
+          <label for="editorSearch">Rāhui</label>
+          <input id="editorSearch" type="search" placeholder="Search records">
+        </div>
+        <div class="form-row editor-filter-row">
+          <div class="field">
+            <label for="editorStatusFilter">Status</label>
+            <select id="editorStatusFilter">
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="expired">Ended</option>
+              <option value="lifted">Lifted</option>
+              <option value="draft">Draft</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="editorPublishedFilter">Published</label>
+            <select id="editorPublishedFilter">
+              <option value="">All</option>
+              <option value="yes">Published</option>
+              <option value="no">Draft</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="editor-list-body" id="editorList"></div>
+    </aside>
+
+    <section class="editor-map-panel">
+      <div id="editorMap"></div>
+      <div class="map-message" id="editorMapMessage">Draw the actual rāhui area with the polygon tool. Lookup boundaries are references and can be used as a starting shape.</div>
+      <details class="editor-reference-layers" id="editorReferenceLayers">
+        <summary><span>Reference layers</span><span class="editor-layer-count" id="editorLayerCount">0 on</span></summary>
+        <div class="editor-reference-layer-body">
+          <p>Show LINZ reference data in the current map extent. These layers do not change the rāhui polygon.</p>
+          <label><input type="checkbox" value="localities" data-reference-layer> Suburbs and localities</label>
+          <label><input type="checkbox" value="gazetteer" data-reference-layer> Place names</label>
+          <label><input type="checkbox" value="riverLines" data-reference-layer> River name lines <small>pilot</small></label>
+          <label><input type="checkbox" value="riverPolygons" data-reference-layer> River name areas <small>pilot</small></label>
+          <div class="editor-layer-status" id="editorLayerStatus">Choose a layer to show it on the map.</div>
+        </div>
+      </details>
+    </section>
+
+    <aside class="editor-form-panel open guided-mode" id="editorFormPanel">
+      <div class="editor-form-toolbar editor-toolbar-stack">
+        <div class="editor-heading-row">
+          <strong id="formHeading">New rāhui</strong>
+          <div class="view-switch" role="group" aria-label="Editor view">
+            <button type="button" class="view-switch-button active" id="editorModeGuided">Steps</button>
+            <button type="button" class="view-switch-button" id="editorModeFull">Editor view</button>
+          </div>
+        </div>
+        <nav class="step-nav" id="stepNav" aria-label="Rāhui editor steps">
+          <button type="button" class="step-button active" data-step="what"><span>1</span> What It Is</button>
+          <button type="button" class="step-button" data-step="when"><span>2</span> When It Is</button>
+          <button type="button" class="step-button" data-step="where"><span>3</span> Where It Is</button>
+        </nav>
+      </div>
+
+      <form class="editor-form" id="rahuiForm">
+        <section class="record-identity-card" aria-label="Rāhui record identity">
+          <div class="field">
+            <label for="rahuiId">Record ID</label>
+            <div class="record-id-row">
+              <input id="rahuiId" type="text" readonly spellcheck="false">
+              <button class="btn small" id="copyRahuiId" type="button">Copy</button>
+            </div>
+            <span class="help">Created before the first save and kept with this rāhui for all later edits.</span>
+          </div>
+          <div class="record-identity-meta">
+            <span id="recordVersion">Version 1</span>
+            <span id="recordSyncState">New record</span>
+          </div>
+        </section>
+
+        <div class="guided-step-intro" data-step-intro="what">
+          <h2>What It Is</h2>
+          <p>Describe the rāhui, who has placed it, why it is in place and what activities are affected.</p>
+        </div>
+
+        <section class="form-section editor-section" data-guided-step="what">
+          <h3>Public Information</h3>
+          <div class="field"><label for="title">Title</label><input id="title" required placeholder="Example: Rāhui at Te Oneroa-a-Tōhē"></div>
+          <div class="field"><label for="summary">Short summary</label><textarea id="summary" placeholder="A concise public explanation"></textarea></div>
+          <div class="field"><label for="description">More information</label><textarea id="description" rows="5"></textarea></div>
+          <div class="form-row">
+            <div class="field"><label for="type">Type</label><select id="type"><option>Coastal or marine</option><option>Freshwater</option><option>Land or access</option><option>Food gathering</option><option>Site or wāhi</option><option>Other</option></select></div>
+            <div class="field"><label for="basis">Basis</label><select id="basis"><option>Customary rāhui</option><option>Customary rāhui with official closure</option><option>Official closure or restriction</option><option>Advisory</option><option>Other</option></select></div>
+          </div>
+          <div class="field"><label for="legalBasis">Legal or official basis</label><input id="legalBasis" placeholder="Optional legislation, notice or closure reference"></div>
+          <div class="field"><label for="reason">Reason or kaupapa</label><textarea id="reason"></textarea></div>
+        </section>
+
+        <section class="form-section editor-section" data-guided-step="what">
+          <h3>People And Organisations</h3>
+          <div class="field"><label for="authority">Authority, kaitiaki or issuing group</label><input id="authority"></div>
+          <div class="field"><label for="iwiHapu">Iwi or hapū</label><input id="iwiHapu"></div>
+          <div class="field"><label for="marae">Marae</label><input id="marae"></div>
+          <div class="form-row">
+            <div class="field"><label for="contactName">Public contact</label><input id="contactName"></div>
+            <div class="field"><label for="contactDetails">Contact details</label><input id="contactDetails"></div>
+          </div>
+        </section>
+
+        <section class="form-section editor-section" data-guided-step="what">
+          <h3>Restrictions</h3>
+          <div class="field"><label for="restrictions">What does the rāhui restrict?</label><textarea id="restrictions"></textarea></div>
+          <div class="field">
+            <span class="label">Activities affected</span>
+            <div class="pill-options" id="activityOptions">
+              <label><input type="checkbox" value="Fishing"> Fishing</label>
+              <label><input type="checkbox" value="Shellfish gathering"> Shellfish gathering</label>
+              <label><input type="checkbox" value="Food gathering"> Food gathering</label>
+              <label><input type="checkbox" value="Swimming"> Swimming</label>
+              <label><input type="checkbox" value="Boating"> Boating</label>
+              <label><input type="checkbox" value="Walking or access"> Walking or access</label>
+              <label><input type="checkbox" value="Hunting"> Hunting</label>
+              <label><input type="checkbox" value="Other"> Other</label>
+            </div>
+          </div>
+          <div class="field"><label for="exceptions">Exceptions or special conditions</label><textarea id="exceptions"></textarea></div>
+        </section>
+
+        <div class="guided-step-intro" data-step-intro="when" hidden>
+          <h2>When It Is</h2>
+          <p>Set when the rāhui was notified, when it takes effect and whether it has an end or review date.</p>
+        </div>
+
+        <section class="form-section editor-section date-section" data-guided-step="when">
+          <div class="section-heading-row"><div><h3>Dates And Status</h3><p>These dates are stored as calendar dates, not timestamps.</p></div><div class="date-status-preview" id="dateStatusPreview"></div></div>
+          <div class="date-overview" id="dateOverview"></div>
+          <div class="form-row">
+            <div class="field"><label for="notifiedDate">Notified</label><input id="notifiedDate" type="date"></div>
+            <div class="field"><label for="startDate">Starts</label><input id="startDate" type="date"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label for="endDate">Ends</label><input id="endDate" type="date"><span class="help">Leave blank for until further notice.</span></div>
+            <div class="field"><label for="reviewDate">Review date</label><input id="reviewDate" type="date"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label for="liftedDate">Lifted date</label><input id="liftedDate" type="date"></div>
+            <div class="field"><label for="statusOverride">Status override</label><select id="statusOverride"><option value="auto">Automatic from dates</option><option value="active">Active</option><option value="upcoming">Upcoming</option><option value="lifted">Lifted</option><option value="ended">Ended</option></select></div>
+          </div>
+        </section>
+
+        <div class="guided-step-intro" data-step-intro="where" hidden>
+          <h2>Where It Is</h2>
+          <p>Find a named place or area, check it on the map and draw or refine the actual rāhui boundary.</p>
+        </div>
+
+        <section class="form-section editor-section location-section" data-guided-step="where">
+          <h3>Location</h3>
+          <div class="field"><label for="locationText">Public area or location wording</label><input id="locationText" placeholder="Named place, coastline, awa, locality or area"></div>
+
+          <div class="lookup-card" id="locationLookupCard">
+            <div class="lookup-heading">
+              <div>
+                <strong>Location Lookup</strong>
+                <p>Search LINZ place names, suburbs and localities and river extents.</p>
+              </div>
+              <span class="source-chip">LINZ</span>
+            </div>
+            <div class="field">
+              <label for="locationLookupSearch">Find a place, awa or area</label>
+              <div class="lookup-search-row">
+                <input id="locationLookupSearch" type="search" placeholder="Example: Awanui River, Ahipara or -35.12, 173.26">
+                <button class="btn" id="runLocationLookup" type="button">Search</button>
+              </div>
+            </div>
+            <div class="lookup-source-options" id="locationLookupSources">
+              <label><input type="checkbox" value="gazetteer" checked> Place names</label>
+              <label><input type="checkbox" value="localities" checked> Suburbs and localities</label>
+              <label><input type="checkbox" value="rivers" checked> River extents</label>
+            </div>
+            <p class="lookup-note" id="locationLookupNote">Place names come from the NZ Gazetteer. Locality polygons are administrative location boundaries. River line and polygon extents are an older LINZ pilot and are shown as reference geometry.</p>
+            <div class="lookup-results" id="locationLookupResults"><div class="empty-state">Search for a location to see lookup results.</div></div>
+          </div>
+
+          <div class="field">
+            <span class="label">Linked location references</span>
+            <div class="location-reference-list" id="locationReferences"><div class="empty-state compact">No source references linked yet.</div></div>
+          </div>
+
+          <div class="notice">Use the Leaflet polygon tools on the map to capture the actual rāhui extent. A locality or river polygon can be copied in as a starting shape, then adjusted to match the rāhui.</div>
+        </section>
+
+        <section class="form-section editor-section" data-guided-step="what" data-advanced-section="true">
+          <h3>Sources</h3>
+          <div class="field"><label for="sourceLinks">Source links</label><textarea id="sourceLinks" placeholder="One URL per line or Label | URL"></textarea><span class="help">Use authoritative notices, iwi or hapū information, agency pages or supporting documents where available.</span></div>
+        </section>
+
+        <section class="form-section editor-section" data-guided-step="what" data-advanced-section="true">
+          <h3>Publishing And Internal Notes</h3>
+          <label class="check-row"><input id="published" type="checkbox"> Published in public view</label>
+          <label class="check-row"><input id="archived" type="checkbox"> Archived</label>
+          <div class="field"><label for="internalNotes">Internal notes</label><textarea id="internalNotes"></textarea><span class="help">Never returned in the public record projection.</span></div>
+          <div class="field" id="debugField" hidden><span class="label">Debug record</span><div id="debugOutput" class="debug"></div></div>
+        </section>
+
+        <div class="guided-navigation" id="guidedNavigation">
+          <button class="btn" id="previousStep" type="button">Previous</button>
+          <div class="guided-navigation-spacer"></div>
+          <button class="btn primary" id="nextStep" type="button">Next</button>
+        </div>
+
+        <div class="editor-form-actions">
+          <button class="btn primary save-button" id="saveRahui" type="submit">Save rāhui</button>
+          <div class="secondary-actions">
+            <button class="btn" id="fitPolygon" type="button">Fit polygon</button>
+            <button class="btn" id="exportGeoJson" type="button">Export GeoJSON</button>
+            <button class="btn" id="duplicateRahui" type="button">Duplicate</button>
+            <button class="btn danger" id="archiveRahui" type="button">Archive</button>
+          </div>
+        </div>
+      </form>
+    </aside>
+  </main>
+
+  <div class="modal-backdrop" id="settingsModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-header"><h2 id="settingsTitle">Settings</h2><button class="btn small" data-close-modal="settingsModal" type="button">Close</button></div>
+      <div class="modal-body">
+        <div class="filter-grid">
+          <div class="field"><label for="storageMode">Storage</label><select id="storageMode"><option value="local">Local browser storage</option><option value="gas">Google Apps Script web app</option></select></div>
+          <div class="field"><label for="gasWebAppUrl">Apps Script web app URL</label><input id="gasWebAppUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec"></div>
+          <div class="field"><label for="writeToken">Editor write token</label><input id="writeToken" type="password" autocomplete="off"><span class="help">This is an operational guard for the local editor, not strong browser-side authentication.</span></div>
+          <div class="field"><label for="editorName">Editor name</label><input id="editorName"></div>
+          <div class="field"><label for="tileUrl">Leaflet tile URL</label><input id="tileUrl"></div>
+          <div class="field"><label for="tileAttribution">Tile attribution</label><input id="tileAttribution"></div>
+          <div class="form-row">
+            <div class="field"><label for="mapCenterLat">Map centre latitude</label><input id="mapCenterLat" type="number" step="0.000001"></div>
+            <div class="field"><label for="mapCenterLng">Map centre longitude</label><input id="mapCenterLng" type="number" step="0.000001"></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label for="mapZoom">Default zoom</label><input id="mapZoom" type="number" min="1" max="20"></div>
+            <div class="field"><label for="publicRecentDays">Recent ended days</label><input id="publicRecentDays" type="number" min="0" max="365"></div>
+          </div>
+          <div class="form-row">
+            <label class="check-row"><input id="locationLookupEnabled" type="checkbox"> Enable external location lookup</label>
+            <label class="check-row"><input id="locationLookupFarNorthOnly" type="checkbox"> Default lookup to Far North District</label>
+          </div>
+          <div class="field"><label for="locationLookupLimit">Maximum location results</label><input id="locationLookupLimit" type="number" min="5" max="50"></div>
+          <div class="form-row">
+            <div class="field">
+              <label for="polygonLabelField">Polygon label field</label>
+              <select id="polygonLabelField">
+                <option value="title">Rāhui title</option>
+                <option value="locationText">Area or location</option>
+                <option value="authority">Authority or kaitiaki</option>
+                <option value="iwiHapu">Iwi or hapū</option>
+                <option value="type">Type</option>
+                <option value="basis">Basis</option>
+                <option value="summary">Short summary</option>
+                <option value="status">Status</option>
+                <option value="none">No label</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="polygonLabelMode">Polygon label display</label>
+              <select id="polygonLabelMode">
+                <option value="hover">Show on hover</option>
+                <option value="always">Always show</option>
+                <option value="off">Turn labels off</option>
+              </select>
+            </div>
+          </div>
+          <span class="help">For Google Apps Script storage these public label settings are saved to the backend so all public viewers use the same configuration.</span>
+          <label class="check-row"><input id="showDebug" type="checkbox"> Show debug JSON</label>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn" id="testBackend" type="button">Test backend</button><button class="btn primary" id="saveSettings" type="button">Save settings</button></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="importModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+      <div class="modal-header"><h2 id="importTitle">Import Data</h2><button class="btn small" data-close-modal="importModal" type="button">Close</button></div>
+      <div class="modal-body">
+        <div class="field"><label for="importFile">Workspace JSON, record JSON or GeoJSON</label><input id="importFile" type="file" accept=".json,.geojson,application/json"></div>
+        <p class="notice">Workspace imports replace all records in the selected storage. GeoJSON can be imported into the current rāhui geometry without replacing the other fields.</p>
+      </div>
+      <div class="modal-footer"><button class="btn primary" id="runImport" type="button">Import</button></div>
+    </div>
+  </div>
+
+  <div class="busy-overlay" id="busyOverlay" hidden role="status" aria-live="polite" aria-busy="true">
+    <div class="busy-card">
+      <div class="busy-spinner" aria-hidden="true"></div>
+      <div class="busy-copy"><strong id="busyTitle">Saving rāhui</strong><span id="busyMessage">Please wait while changes are synced.</span></div>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+  <script type="module" src="./editor-app.js"></script>
+</body>
+</html>
