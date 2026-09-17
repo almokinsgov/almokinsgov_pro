@@ -1,0 +1,9 @@
+{
+  "name": "Office Safety Traffic Light",
+  "short_name": "Office Safety",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#eef2f6",
+  "theme_color": "#111827",
+  "description": "Office presence, safety traffic lights and quick staff messaging."
+}
