@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <title>Office Safety</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+  <script id="gsiClientScript" src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <noscript>This app requires JavaScript.</noscript>
+
+  <div id="offlineBanner" class="offline-banner hidden" role="status">Offline. Showing the last available office state.</div>
+
+  <div id="loadingOverlay" class="loading-overlay hidden" role="status" aria-live="assertive" aria-busy="true">
+    <div class="loading-card">
+      <div class="loading-signal" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="loading-spinner" aria-hidden="true"></div>
+      <h2 id="loadingTitle">Working...</h2>
+      <p id="loadingDetail">Please wait for the safety service to respond.</p>
+      <p class="small muted">Controls are temporarily locked so the same action cannot be sent twice.</p>
+    </div>
+  </div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-group">
+        <div class="brand-mark" aria-hidden="true">
+          <span class="lamp red"></span><span class="lamp amber"></span><span class="lamp green"></span>
+        </div>
+        <div>
+          <div class="eyebrow">Office Safety</div>
+          <h1>Traffic Light</h1>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span id="syncState" class="sync-state">Not connected</span>
+        <span id="queueState" class="sync-state queued hidden" title="Actions waiting for background retry"></span>
+        <button id="quickControlsBtn" class="button tiny ghost hidden" type="button" title="Show notification-area traffic-light controls">Quick Controls</button>
+        <button id="installBtn" class="button tiny ghost hidden" type="button">Install App</button>
+        <button id="mediaControlsBtn" class="button tiny ghost hidden" type="button" title="Open Media Session controls">Media</button>
+        <button id="pipBtn" class="button tiny ghost hidden" type="button" title="Open Picture-in-Picture">PiP</button>
+        <button id="settingsBtn" class="icon-btn hidden" type="button" aria-label="Settings">⚙</button>
+        <button id="signOutBtn" class="button ghost hidden" type="button">Sign Out</button>
+      </div>
+    </header>
+
+    <section id="loginView" class="view login-view">
+      <div class="login-card card">
+        <div class="large-signal" aria-hidden="true">
+          <span class="signal red"></span><span class="signal amber"></span><span class="signal green active"></span>
+        </div>
+        <p class="eyebrow">Staff Sign In</p>
+        <h2>Let Your Office Know You Are Here</h2>
+        <p class="muted">Sign in with your approved Google account. Your identity is confirmed by Google and the safety service.</p>
+        <div id="googleSignIn" class="google-signin"></div>
+        <p id="loginHelp" class="small muted"></p>
+        <details class="connection-diagnostics">
+          <summary>Connection Diagnostics</summary>
+          <dl>
+            <div><dt>Front-end origin</dt><dd id="diagOrigin">Checking...</dd></div>
+            <div><dt>Google sign-in</dt><dd id="diagGoogle">Checking...</dd></div>
+            <div><dt>Apps Script bridge</dt><dd id="diagBridge">Checking...</dd></div>
+          </dl>
+          <p class="small muted">Google Cloud <strong>Authorized JavaScript origins</strong>, Apps Script <strong>ALLOWED_FRONTEND_ORIGINS</strong> and the <strong>Staff</strong> account allowlist are separate settings.</p>
+          <a id="backendTestLink" class="button tiny ghost" target="_blank" rel="noopener">Open Backend Test</a>
+        </details>
+      </div>
+    </section>
+
+    <section id="setupView" class="view hidden">
+      <div class="card setup-card">
+        <p class="eyebrow">Check In</p>
+        <h2 id="welcomeName">Choose Your Office</h2>
+        <p class="muted">You will appear in the live office rosters until you check out or your presence expires.</p>
+        <label class="field">
+          <span>Office</span>
+          <select id="officeSelect"></select>
+        </label>
+        <fieldset class="status-fieldset">
+          <legend>Your Traffic Light</legend>
+          <div class="status-grid">
+            <button class="status-choice green selected" type="button" data-status="green">
+              <span class="dot"></span><strong>Green</strong><small>Normal</small>
+            </button>
+            <button class="status-choice amber" type="button" data-status="amber">
+              <span class="dot"></span><strong>Amber</strong><small>Attention</small>
+            </button>
+            <button class="status-choice red" type="button" data-status="red">
+              <span class="dot"></span><strong>Red</strong><small>Safety Concern</small>
+            </button>
+          </div>
+        </fieldset>
+        <label class="field">
+          <span>Optional Note</span>
+          <input id="checkInNote" type="text" maxlength="120" placeholder="For example: Working in interview room 2">
+        </label>
+        <button id="checkInBtn" class="button primary wide" type="button">Check In</button>
+      </div>
+    </section>
+
+    <section id="officeView" class="view hidden">
+      <nav class="mode-tabs" aria-label="View">
+        <button class="mode-tab active" data-view="office" type="button">My Office</button>
+        <button id="adminTab" class="mode-tab hidden" data-view="admin" type="button">Admin</button>
+      </nav>
+
+      <div id="officePanel">
+        <section class="office-hero card">
+          <div>
+            <p class="eyebrow">Checked In</p>
+            <h2 id="officeName">Office</h2>
+            <p id="officeSummary" class="muted">Loading office status...</p>
+          </div>
+          <div id="officeSignal" class="office-signal green" aria-label="Office traffic light status">
+            <span></span><strong>GREEN</strong>
+          </div>
+        </section>
+
+        <section class="action-layout">
+          <article class="card status-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Your Status</p>
+                <h3>Set Your Traffic Light</h3>
+              </div>
+              <span id="myLastUpdate" class="small muted"></span>
+            </div>
+            <div class="traffic-controls">
+              <button class="traffic-btn green selected" data-status="green" type="button"><span></span><strong>Green</strong><small>Normal</small></button>
+              <button class="traffic-btn amber" data-status="amber" type="button"><span></span><strong>Amber</strong><small>Attention</small></button>
+              <button class="traffic-btn red" data-status="red" type="button"><span></span><strong>Red</strong><small>Safety Concern</small></button>
+            </div>
+            <label class="field compact-field">
+              <span>Status Note</span>
+              <input id="statusNote" maxlength="120" placeholder="Optional short context">
+            </label>
+            <div class="button-row">
+              <button id="updateStatusBtn" class="button primary" type="button">Update Status</button>
+              <button id="changeOfficeBtn" class="button secondary" type="button">Change Office</button>
+              <button id="checkOutBtn" class="button ghost danger-text" type="button">Check Out</button>
+            </div>
+          </article>
+
+          <article class="card message-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Quick Message</p>
+                <h3>Message This Office</h3>
+              </div>
+            </div>
+            <div class="quick-message-row">
+              <input id="messageInput" maxlength="300" placeholder="Type a short message for people in this office">
+              <button id="sendMessageBtn" class="button primary" type="button">Send</button>
+            </div>
+            <div class="message-presets" aria-label="Quick messages">
+              <button type="button" data-message="Can someone come to reception?">Reception</button>
+              <button type="button" data-message="Please check in with me when you are free.">Check In</button>
+              <button type="button" data-message="Please be aware of activity near the office entrance.">Be Aware</button>
+            </div>
+            <p class="small muted safety-note">For immediate danger, follow your organisation's emergency procedures. This app is a supplementary coordination tool.</p>
+          </article>
+        </section>
+
+        <section class="content-layout">
+          <article class="card people-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Live Roster</p>
+                <h3>People In This Office</h3>
+              </div>
+              <span id="peopleCount" class="count-pill">0</span>
+            </div>
+            <div id="peopleList" class="people-list empty-state">No one else is visible yet.</div>
+          </article>
+
+          <article class="card feed-card">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Office Feed</p>
+                <h3>Recent Messages</h3>
+              </div>
+              <button id="refreshBtn" class="button tiny ghost" type="button">Refresh</button>
+            </div>
+            <div id="messageFeed" class="message-feed empty-state">No messages yet.</div>
+          </article>
+        </section>
+
+        <section class="card other-offices-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Other Offices</p>
+              <h3>See Other Office Rosters</h3>
+              <p class="small muted">Live check-ins and traffic lights for staff in other active offices.</p>
+            </div>
+            <span id="otherOfficesCount" class="count-pill">0</span>
+          </div>
+          <div id="otherOfficesList" class="other-offices-grid empty-state">Loading other offices...</div>
+        </section>
+      </div>
+
+      <div id="adminPanel" class="hidden">
+        <section class="admin-summary-grid">
+          <article class="card metric"><span>Checked In</span><strong id="adminPeopleTotal">0</strong></article>
+          <article class="card metric"><span>Green</span><strong id="adminGreenTotal">0</strong></article>
+          <article class="card metric"><span>Amber</span><strong id="adminAmberTotal">0</strong></article>
+          <article class="card metric"><span>Red</span><strong id="adminRedTotal">0</strong></article>
+        </section>
+
+        <section class="card admin-controls">
+          <div class="section-heading">
+            <div><p class="eyebrow">Admin</p><h2>All Offices</h2></div>
+            <button id="adminRefreshBtn" class="button secondary" type="button">Refresh</button>
+          </div>
+          <div class="filter-row">
+            <label class="field"><span>Office</span><select id="adminOfficeFilter"><option value="">All offices</option></select></label>
+            <label class="field"><span>Status</span><select id="adminStatusFilter"><option value="">All statuses</option><option value="green">Green</option><option value="amber">Amber</option><option value="red">Red</option></select></label>
+            <label class="field grow"><span>Search</span><input id="adminSearch" type="search" placeholder="Name, email or message"></label>
+          </div>
+        </section>
+
+        <section id="adminOffices" class="admin-office-list"></section>
+
+        <section class="content-layout admin-lower">
+          <article class="card">
+            <div class="section-heading"><div><p class="eyebrow">Admin Message</p><h3>Send An Announcement</h3></div></div>
+            <div class="filter-row admin-message-options">
+              <label class="field grow"><span>Target</span><select id="adminMessageOffice"><option value="*">All offices</option></select></label>
+              <label class="field"><span>Severity</span><select id="adminMessageSeverity"><option value="green">Green</option><option value="amber">Amber</option><option value="red">Red</option></select></label>
+            </div>
+            <div class="quick-message-row">
+              <input id="adminMessageInput" maxlength="300" placeholder="Message an office or all offices">
+              <button id="adminSendMessageBtn" class="button primary" type="button">Send</button>
+            </div>
+          </article>
+          <article class="card">
+            <div class="section-heading"><div><p class="eyebrow">Message History</p><h3>Recent Office Messages</h3></div><button id="loadMoreMessagesBtn" class="button tiny ghost" type="button">More</button></div>
+            <div id="adminMessageHistory" class="message-feed empty-state">No messages loaded.</div>
+          </article>
+        </section>
+
+        <section class="card admin-activity-card">
+          <div class="section-heading"><div><p class="eyebrow">Audit</p><h3>Recent Activity</h3></div><button id="loadMoreActivityBtn" class="button tiny ghost" type="button">More</button></div>
+          <div id="activityFeed" class="activity-feed empty-state">No activity loaded.</div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="settingsDialog" class="settings-dialog">
+    <form method="dialog">
+      <div class="section-heading"><div><p class="eyebrow">Preferences</p><h2>Settings</h2></div><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
+      <section class="settings-group">
+        <div><p class="eyebrow">Alerts</p><h3>Notifications</h3></div>
+        <label class="toggle-row"><span><strong>System notifications</strong><small>Show OS-level alerts for new Amber or Red activity.</small></span><input id="notificationsSetting" type="checkbox"></label>
+        <div class="notification-test-row"><span id="notificationPermissionState" class="small muted">Permission: checking...</span><button id="testNotificationBtn" class="button tiny secondary" type="button">Test Notification</button></div>
+        <label class="toggle-row"><span><strong>Notification quick controls</strong><small>Allow a persistent notification with Green, Amber and Red buttons when the device supports notification actions.</small></span><input id="quickControlsSetting" type="checkbox"></label>
+        <div class="notification-test-row"><span id="notificationActionsCapability" class="small muted">Checking action buttons...</span><button id="showQuickControlsBtn" class="button tiny secondary" type="button">Show Quick Controls</button></div>
+        <label class="toggle-row"><span><strong>Alert sound</strong><small>Play a short tone for important incoming activity.</small></span><input id="soundSetting" type="checkbox"></label>
+      </section>
+
+      <section class="settings-group">
+        <div><p class="eyebrow">Background</p><h3>Sync And Monitoring</h3></div>
+        <label class="toggle-row"><span><strong>Background retry sync</strong><small>Queue short-lived status and message writes if the connection drops then retry safely using request IDs.</small></span><input id="backgroundSyncSetting" type="checkbox"></label>
+        <div class="capability-row"><span>Background Sync</span><strong id="backgroundSyncCapability">Checking...</strong></div>
+        <div class="capability-row"><span>Queued actions</span><strong id="backgroundQueuedCount">0</strong></div>
+        <div class="notification-test-row"><span class="small muted">Queued actions expire rather than being sent late.</span><button id="retryQueuedBtn" class="button tiny secondary" type="button">Retry Now</button></div>
+        <label class="toggle-row"><span><strong>Periodic background sync</strong><small>Ask the browser to wake the Service Worker periodically. Timing is browser-controlled and is not an exact schedule.</small></span><input id="periodicSyncSetting" type="checkbox"></label>
+        <label class="field"><span>Requested minimum periodic interval</span><select id="periodicSyncMinutesSetting"><option value="15">15 minutes</option><option value="60">1 hour</option><option value="360">6 hours</option><option value="1440">24 hours</option></select></label>
+        <div class="capability-row"><span>Periodic Background Sync</span><strong id="periodicSyncCapability">Checking...</strong></div>
+        <div class="capability-row"><span>Background Fetch</span><strong id="backgroundFetchCapability">Checking...</strong></div>
+        <p class="small muted">Background Fetch is intended for large downloads. Office Safety uses small API messages, so it is detected but intentionally not used.</p>
+      </section>
+
+      <section class="settings-group">
+        <div><p class="eyebrow">System Controls</p><h3>Media Session And PiP</h3></div>
+        <label class="toggle-row"><span><strong>Media Session controls</strong><small>Enable lock-screen and system media controls. The separate Media panel can start an inaudible media carrier so mobile browsers have an active media session to expose.</small></span><input id="mediaControlsSetting" type="checkbox"></label>
+        <div class="capability-row"><span>Media Session</span><strong id="mediaSessionCapability">Checking...</strong></div>
+        <div class="notification-test-row"><span class="small muted">Starting the silent media stream requires a direct tap. It uses a local zero-amplitude audio file and does not request microphone access.</span><button id="openMediaControlsFromSettingsBtn" class="button tiny secondary" type="button">Open Media Controls</button></div>
+        <div class="capability-row"><span>Secure context</span><strong id="secureContextCapability">Checking...</strong></div>
+      </section>
+
+      <section class="settings-group">
+        <div><p class="eyebrow">General</p><h3>Refresh And Office</h3></div>
+        <label class="field"><span>Refresh interval</span><select id="pollSetting"><option value="5000">5 seconds</option><option value="10000">10 seconds</option><option value="15000">15 seconds</option><option value="30000">30 seconds</option></select></label>
+        <label class="field"><span>Default office</span><select id="defaultOfficeSetting"><option value="">None</option></select></label>
+      </section>
+      <div class="button-row end"><button id="saveSettingsBtn" class="button primary" value="default">Save</button></div>
+    </form>
+  </dialog>
+
+
+  <dialog id="mediaControlsDialog" class="settings-dialog media-controls-dialog">
+    <form method="dialog">
+      <div class="section-heading"><div><p class="eyebrow">System Media</p><h2>Media Controls</h2></div><button class="icon-btn" value="cancel" aria-label="Close">×</button></div>
+      <p class="muted">Use a silent local media carrier to keep Office Safety available in supported phone media controls. The carrier contains digital silence, has no audible content and does not use the microphone.</p>
+
+      <section class="settings-group media-status-grid">
+        <div class="capability-row"><span>Media Session</span><strong id="mediaControlSupportState">Checking...</strong></div>
+        <div class="capability-row"><span>Silent media stream</span><strong id="mediaStreamState">Stopped</strong></div>
+        <div class="capability-row"><span>Monitored office</span><strong id="mediaMonitoredOffice">Not checked in</strong></div>
+        <div class="capability-row"><span>Roster refresh</span><strong id="mediaMonitoringState">Live refresh running</strong></div>
+      </section>
+
+      <div class="media-stream-actions">
+        <button id="startMediaStreamBtn" class="button primary" type="button">Start Silent Media Stream</button>
+        <button id="stopMediaStreamBtn" class="button secondary" type="button">Stop Media Stream</button>
+      </div>
+
+      <section class="settings-group">
+        <div><p class="eyebrow">Control Deck</p><h3>Monitoring Controls</h3></div>
+        <div class="media-control-grid">
+          <button id="mediaPrevOfficeBtn" class="button secondary" type="button">Previous Office</button>
+          <button id="mediaPauseResumeBtn" class="button secondary" type="button">Pause Live Refresh</button>
+          <button id="mediaNextOfficeBtn" class="button secondary" type="button">Next Office</button>
+          <button id="mediaPipBtn" class="button secondary" type="button">Open PiP</button>
+        </div>
+        <p class="small muted">System media buttons use Play to resume, Pause to pause live roster refresh, Stop to end the silent media session and Previous or Next to cycle the monitored office. Available buttons vary by phone and browser.</p>
+      </section>
+    </form>
+  </dialog>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="debug.js"></script>
+  <script src="api-bridge.js"></script>
+  <script src="background.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
