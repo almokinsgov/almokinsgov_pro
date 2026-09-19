@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Office Safety Cast Receiver</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f8fafc;background:#111827}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111827}
+    body{display:grid;grid-template-rows:84px 1fr 68px}
+    header,footer{display:flex;align-items:center;padding:0 4vw;background:#1f2937}header{justify-content:space-between}footer{color:#cbd5e1;font-size:1.3vw}
+    .brand{font-size:2vw;font-weight:800;letter-spacing:.08em}.connection{font-size:1.2vw;color:#94a3b8}
+    main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);gap:4vw;padding:5vh 5vw;align-items:center}
+    .office{font-size:3.4vw;font-weight:800;margin:0 0 4vh}.signal-wrap{display:flex;align-items:center;gap:4vw}.signal{width:18vw;height:18vw;border-radius:50%;display:grid;place-items:center;border:8px solid #f8fafc;font-size:3.1vw;font-weight:900;background:#64748b}.signal.green{background:#138a4a}.signal.amber{background:#b97800}.signal.red{background:#b42318}.signal.empty{background:#64748b}
+    .metrics{display:grid;gap:2.5vh}.label{font-size:1.3vw;letter-spacing:.08em;color:#94a3b8;font-weight:700}.value{font-size:3vw;font-weight:850}.mine.green{color:#4ade80}.mine.amber{color:#fbbf24}.mine.red{color:#f87171}
+    .right{display:grid;gap:3vh}.card{background:#1f2937;border-radius:24px;padding:2.5vh 2vw}.card h2{font-size:1.5vw;margin:0 0 1.6vh;color:#cbd5e1}.roster{display:grid;grid-template-columns:1fr 1fr;gap:1.2vh 1.2vw}.person{display:flex;align-items:center;gap:.7vw;min-width:0;font-size:1.35vw}.dot{width:16px;height:16px;border-radius:50%;background:#64748b;flex:0 0 auto}.dot.green{background:#22c55e}.dot.amber{background:#f59e0b}.dot.red{background:#ef4444}.name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .alert{border-left:8px solid #64748b}.alert.amber{border-color:#f59e0b}.alert.red{border-color:#ef4444}.alert strong{font-size:1.7vw}.alert p{font-size:1.35vw;margin:.8vh 0 0;color:#e2e8f0}
+    .waiting{grid-column:1/-1;text-align:center;color:#94a3b8}.waiting h1{font-size:4vw;color:#f8fafc;margin:.2em}.hidden{display:none!important}
+    @media(max-aspect-ratio:4/3){main{grid-template-columns:1fr}.right{grid-template-columns:1fr 1fr}.office{font-size:4vw}.signal{width:24vw;height:24vw}.label{font-size:1.8vw}.value{font-size:4vw}}
+  </style>
+</head>
+<body>
+  <video id="castMediaElement" class="castMediaElement" style="display:none" aria-hidden="true"></video>
+  <header><div class="brand">OFFICE SAFETY</div><div id="connection" class="connection">Waiting for sender…</div></header>
+  <main>
+    <section id="waiting" class="waiting"><h1>Office Safety</h1><p>Connect from the Office Safety Cast button to show a live office status.</p></section>
+    <section id="primary" class="hidden">
+      <h1 id="officeName" class="office">Office</h1>
+      <div class="signal-wrap">
+        <div id="officeSignal" class="signal empty">EMPTY</div>
+        <div class="metrics">
+          <div><div class="label">CHECKED IN</div><div id="peopleCount" class="value">0</div></div>
+          <div><div class="label">SENDER STATUS</div><div id="myStatus" class="value mine green">GREEN</div></div>
+          <div><div class="label">LAST UPDATE</div><div id="lastUpdate" class="value" style="font-size:2vw">Waiting</div></div>
+        </div>
+      </div>
+    </section>
+    <section id="right" class="right hidden">
+      <div id="alertCard" class="card alert hidden"><h2>LATEST ESCALATION</h2><strong id="alertTitle"></strong><p id="alertText"></p></div>
+      <div id="rosterCard" class="card hidden"><h2>LIVE ROSTER</h2><div id="roster" class="roster"></div></div>
+    </section>
+  </main>
+  <footer><span>Office Safety Traffic Light • Live Cast display • Supplementary coordination display</span></footer>
+
+  <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <script>
+  (() => {
+    'use strict';
+    const NAMESPACE = 'urn:x-cast:com.almokinsgov.office-safety';
+    const context = cast.framework.CastReceiverContext.getInstance();
+    let lastReceived = 0;
+    let current = null;
+
+    const $ = id => document.getElementById(id);
+    const text = (id, value) => { const el = $(id); if (el) el.textContent = value == null ? '' : String(value); };
+    const cleanStatus = value => ['green','amber','red','empty'].includes(String(value || '').toLowerCase()) ? String(value).toLowerCase() : 'empty';
+
+    function render(payload) {
+      current = payload || current;
+      if (!current?.office) return;
+      lastReceived = Date.now();
+      $('waiting').classList.add('hidden');
+      $('primary').classList.remove('hidden');
+      $('right').classList.remove('hidden');
+      const office = current.office;
+      const status = cleanStatus(office.status);
+      text('officeName', office.name || office.id || 'Office');
+      text('officeSignal', status.toUpperCase());
+      $('officeSignal').className = `signal ${status}`;
+      text('peopleCount', Number(office.peopleCount || 0));
+      const mine = cleanStatus(current.me?.status || 'green');
+      text('myStatus', mine.toUpperCase());
+      $('myStatus').className = `value mine ${mine}`;
+      text('lastUpdate', new Date(current.sentAt || Date.now()).toLocaleTimeString('en-NZ', {hour:'2-digit',minute:'2-digit'}));
+
+      const roster = Array.isArray(current.roster) ? current.roster : [];
+      $('rosterCard').classList.toggle('hidden', !roster.length);
+      $('roster').innerHTML = roster.slice(0, 10).map(person => {
+        const s = cleanStatus(person.status || 'green');
+        const name = String(person.name || 'Staff member').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        return `<div class="person"><span class="dot ${s}"></span><span class="name">${name}</span></div>`;
+      }).join('');
+
+      const alert = current.latestEscalation;
+      $('alertCard').classList.toggle('hidden', !alert);
+      if (alert) {
+        const sev = cleanStatus(alert.severity || alert.newStatus || 'amber');
+        $('alertCard').className = `card alert ${sev}`;
+        text('alertTitle', `${String(alert.newStatus || sev).toUpperCase()} • ${alert.staffName || 'Staff member'} • ${alert.officeName || office.name || ''}`);
+        const transition = alert.previousStatus ? `${String(alert.previousStatus).toUpperCase()} → ${String(alert.newStatus || sev).toUpperCase()}` : String(alert.newStatus || sev).toUpperCase();
+        text('alertText', `${transition}${alert.note ? ` • ${alert.note}` : ''}`);
+      }
+      text('connection', 'Live sender connected');
+    }
+
+    context.addCustomMessageListener(NAMESPACE, event => {
+      if (event?.data?.type === 'office-safety-state') render(event.data);
+    });
+    context.addEventListener(cast.framework.system.EventType.SENDER_CONNECTED, () => text('connection', 'Sender connected • waiting for status…'));
+    context.addEventListener(cast.framework.system.EventType.SENDER_DISCONNECTED, () => text('connection', 'Sender disconnected • showing last received status'));
+
+    setInterval(() => {
+      if (!lastReceived) return;
+      const age = Date.now() - lastReceived;
+      if (age > 45000) text('connection', `Status is stale • last sender update ${Math.round(age / 1000)}s ago`);
+      else text('connection', 'Live sender connected');
+    }, 5000);
+
+    context.start({
+      disableIdleTimeout: true,
+      customNamespaces: { [NAMESPACE]: cast.framework.system.MessageType.JSON },
+      statusText: 'Office Safety live status',
+      skipPlayersLoad: true
+    });
+  })();
+  </script>
+</body>
+</html>
