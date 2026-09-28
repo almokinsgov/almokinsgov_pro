@@ -1,0 +1,10 @@
+{
+  "name": "GIS AR Viewer",
+  "short_name": "GIS AR",
+  "description": "ArcGIS FeatureServer GIS and browser AR viewer",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "orientation": "any"
+}
