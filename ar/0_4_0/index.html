@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Static ArcGIS FeatureServer GIS and browser AR viewer">
+  <meta name="application-version" content="0.4.0">
+  <title>GIS AR Viewer</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">◎</div>
+        <div>
+          <strong>GIS AR Viewer</strong>
+          <span>FeatureServer map and field view</span>
+        </div>
+      </div>
+      <div class="mode-switch" role="tablist" aria-label="Viewer mode">
+        <button id="mapModeBtn" class="mode-button active" role="tab" aria-selected="true">Map</button>
+        <button id="arModeBtn" class="mode-button" role="tab" aria-selected="false">AR</button>
+      </div>
+      <button id="sidebarToggle" class="icon-button mobile-only" aria-label="Open layers">☰</button>
+    </header>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-scroll">
+        <section class="panel-section source-section">
+          <div class="section-heading">
+            <div>
+              <h1>Layers</h1>
+              <p>Add an ArcGIS FeatureServer service or layer URL.</p>
+            </div>
+          </div>
+
+          <form id="sourceForm" class="source-form">
+            <label for="sourceUrl">FeatureServer URL</label>
+            <div class="input-row">
+              <input id="sourceUrl" type="url" placeholder="https://.../FeatureServer/0" value="https://services5.arcgis.com/H4FlrMy6xTBd6Ywx/ArcGIS/rest/services/BuildingConsents_public_FNDC/FeatureServer" autocomplete="url" required>
+              <button type="submit" class="primary-button">Add</button>
+            </div>
+            <details class="advanced-options">
+              <summary>Connection options</summary>
+              <label for="proxyUrl">CORS proxy prefix <span class="muted">optional</span></label>
+              <input id="proxyUrl" type="url" autocomplete="off" placeholder="https://proxy.example/?url=">
+              <p class="help-text compact-help">This build is designed for public FeatureServer layers and does not require or store ArcGIS access tokens.</p>
+            </details>
+          </form>
+
+          <div id="discoveryPanel" class="discovery-panel hidden" aria-live="polite"></div>
+          <div id="layerList" class="layer-list"></div>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-heading compact">
+            <h2>View</h2>
+          </div>
+          <label for="basemapSelect">Basemap</label>
+          <select id="basemapSelect">
+            <option value="osm">OpenStreetMap</option>
+            <option value="topo">OpenTopoMap</option>
+            <option value="blank">Blank</option>
+          </select>
+          <div class="button-grid">
+            <button id="locateBtn" class="secondary-button" type="button">Use my location</button>
+            <button id="fitBtn" class="secondary-button" type="button">Fit layers</button>
+          </div>
+        </section>
+
+        <section class="panel-section ar-settings" id="arSettings">
+          <div class="section-heading compact">
+            <h2>AR Settings</h2>
+          </div>
+          <label for="arRange">Range <strong id="arRangeValue">2 km</strong></label>
+          <input id="arRange" type="range" min="100" max="20000" step="100" value="2000">
+          <label for="arSpatialLimit">Spatial items <strong id="arSpatialLimitValue">500</strong></label>
+          <select id="arSpatialLimit">
+            <option>100</option>
+            <option>250</option>
+            <option selected>500</option>
+            <option>1000</option>
+            <option>2000</option>
+            <option>5000</option>
+          </select>
+          <p class="help-text compact-help">All spatial items receive their own bearing, distance and elevation and are drawn as AR anchors. Increase this when you need a denser scene.</p>
+          <label for="arMaxFeatures">Detailed labels <strong id="arMaxFeaturesValue">75</strong></label>
+          <select id="arMaxFeatures">
+            <option>25</option>
+            <option>50</option>
+            <option selected>75</option>
+            <option>100</option>
+            <option>150</option>
+            <option>250</option>
+          </select>
+          <p class="help-text compact-help">Labels are limited separately for readability and performance. Unlabelled spatial items still remain visible as elevation-aware anchors.</p>
+          <label for="headingOffset">Heading calibration <strong id="headingOffsetValue">0°</strong></label>
+          <input id="headingOffset" type="range" min="-90" max="90" step="1" value="0">
+          <label for="cameraFov">Camera field of view <strong id="cameraFovValue">62°</strong></label>
+          <input id="cameraFov" type="range" min="40" max="100" step="1" value="62">
+          <div class="button-grid">
+            <button id="reanchorYawBtn" class="secondary-button" type="button">Re-anchor yaw</button>
+            <button id="enableArBtn" class="primary-button" type="button">Enable AR</button>
+          </div>
+          <div id="permissionHelp" class="permission-help hidden" role="status">
+            <strong>Permission help</strong>
+            <p id="permissionHelpText"></p>
+          </div>
+          <p class="help-text">Phone camera, location and orientation normally require HTTPS. On iPhone, sensor permission must be requested directly from a tap.</p>
+        </section>
+
+        <section class="panel-section elevation-settings" id="elevationSettings">
+          <div class="section-heading compact">
+            <h2>Elevation</h2>
+          </div>
+          <label class="check-row" for="elevationEnabled">
+            <input id="elevationEnabled" type="checkbox" checked>
+            <span>Use terrain elevation for AR height</span>
+          </label>
+          <label for="elevationProvider">Elevation source</label>
+          <select id="elevationProvider">
+            <option value="auto" selected>Auto: Terrarium + Open-Meteo fallback</option>
+            <option value="terrarium">AWS Terrarium terrain tiles</option>
+            <option value="open-meteo">Open-Meteo Copernicus DEM</option>
+          </select>
+          <p id="elevationProviderHelp" class="help-text compact-help">All built-in elevation modes are token-free. Auto samples public Terrarium tiles first and falls back to Open-Meteo when needed.</p>
+          <div class="two-field-grid">
+            <div>
+              <label for="eyeHeight">Eye height</label>
+              <div class="number-with-unit"><input id="eyeHeight" type="number" min="0" max="3" step="0.05" value="1.65"><span>m</span></div>
+            </div>
+            <div>
+              <label for="targetHeight">Marker height</label>
+              <div class="number-with-unit"><input id="targetHeight" type="number" min="0" max="100" step="0.1" value="1.5"><span>m</span></div>
+            </div>
+          </div>
+          <label for="verticalScale">Terrain vertical scale <strong id="verticalScaleValue">1.0×</strong></label>
+          <input id="verticalScale" type="range" min="1" max="5" step="0.1" value="1">
+          <p class="help-text compact-help">1× preserves true geometry. Increase only when you want to exaggerate subtle relief for inspection.</p>
+          <label for="sourceElevationMode">Source Z handling</label>
+          <select id="sourceElevationMode">
+            <option value="ignore" selected>Ignore source Z and use terrain</option>
+            <option value="absolute">Source Z is absolute elevation</option>
+            <option value="height">Source Z is height above terrain</option>
+          </select>
+          <label for="sourceElevationField">Elevation field <span class="muted">optional</span></label>
+          <input id="sourceElevationField" type="text" spellcheck="false" placeholder="e.g. elevation_m">
+          <div class="button-grid">
+            <button id="elevationRefreshBtn" class="secondary-button" type="button">Refresh elevation</button>
+            <button id="elevationClearCacheBtn" class="secondary-button" type="button">Clear terrain cache</button>
+          </div>
+          <p class="help-text">Terrain is sampled independently at your location and at every nearby GIS anchor. No access token is required. The observer uses terrain plus eye height and each item uses its own terrain elevation plus marker height. Only use source Z when you know its vertical meaning and datum.</p>
+        </section>
+
+        <section class="panel-section diagnostics">
+          <div class="section-heading compact">
+            <h2>Status</h2>
+          </div>
+          <div class="status-grid">
+            <span>Location</span><strong id="locationStatus">Off</strong>
+            <span>Heading</span><strong id="headingStatus">Off</strong>
+            <span>Camera</span><strong id="cameraStatus">Off</strong>
+            <span>Elevation</span><strong id="elevationStatus">Off</strong>
+            <span>Map features</span><strong id="featureCount">0</strong>
+            <span>AR spatial items</span><strong id="arSpatialStatus">0</strong>
+          </div>
+          <button id="exportDebugBtn" class="text-button" type="button">Export diagnostics</button>
+        </section>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <section id="mapView" class="view active-view" aria-label="Map view">
+        <div id="map"></div>
+        <div class="map-tools">
+          <button id="zoomToMeBtn" class="floating-button" type="button" title="Zoom to my location">⌖</button>
+        </div>
+        <div id="mapMessage" class="toast hidden"></div>
+      </section>
+
+      <section id="arView" class="view" aria-label="Augmented reality view">
+        <video id="cameraVideo" autoplay muted playsinline></video>
+        <div id="arFallback" class="ar-fallback">
+          <div class="fallback-grid"></div>
+          <div class="fallback-copy">
+            <strong>AR preview</strong>
+            <span>Enable camera and sensors on a supported phone, or use the heading control to simulate AR on desktop.</span>
+          </div>
+        </div>
+        <div id="arOverlay" class="ar-overlay">
+          <div class="ar-top-hud">
+            <div class="hud-pill"><span id="hudHeading">000°</span><small id="hudDirection">N</small></div>
+            <div class="hud-pill"><span id="hudAccuracy">Location off</span></div>
+            <div class="hud-pill"><span id="hudElevation">Elevation off</span></div>
+          </div>
+          <div id="arHorizon" class="horizon-line" aria-hidden="true"></div>
+          <canvas id="arAnchorCanvas" class="ar-anchor-canvas" aria-hidden="true"></canvas>
+          <div id="arMarkers" class="ar-markers"></div>
+          <div class="ar-reticle" aria-hidden="true"><span></span></div>
+          <div class="ar-bottom-hud">
+            <button id="arRefreshBtn" class="hud-button" type="button">Refresh nearby</button>
+            <label class="desktop-heading" for="desktopHeading">Heading
+              <input id="desktopHeading" type="range" min="0" max="359" step="1" value="0">
+            </label>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="featureDialog" class="feature-dialog">
+    <button id="featureDialogClose" class="dialog-close" aria-label="Close">×</button>
+    <div id="featureDialogContent"></div>
+  </dialog>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="geo.js"></script>
+  <script src="feature-server.js"></script>
+  <script src="workbench-ar.js"></script>
+  <script src="ar-view.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
