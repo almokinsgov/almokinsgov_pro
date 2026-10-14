@@ -1,0 +1,157 @@
+{
+  "version": "1.0.0",
+  "ocr": "Tesseract.js 7.0.0, LSTM",
+  "models": [
+    {
+      "quality": "best",
+      "language": "eng",
+      "commit": "e12c65a915945e4c28e237a9b52bc4a8f39a0cec",
+      "sha256": "8280aed0782fe27257a68ea10fe7ef324ca0f8d85bd2fd145d1c2b560bcb66ba"
+    },
+    {
+      "quality": "best",
+      "language": "mri",
+      "commit": "e12c65a915945e4c28e237a9b52bc4a8f39a0cec",
+      "sha256": "67d322dcc41ca59929236c85393c6ecc644c29feda149fbe2b95adcb4a1b0494"
+    },
+    {
+      "quality": "fast",
+      "language": "eng",
+      "commit": "87416418657359cb625c412a48b6e1d6d41c29bd",
+      "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+    },
+    {
+      "quality": "fast",
+      "language": "mri",
+      "commit": "87416418657359cb625c412a48b6e1d6d41c29bd",
+      "sha256": "8552be985e8fa0210d6d815d736151d645089b590a56f2d92391fb864e8bf9c9"
+    }
+  ],
+  "files": [
+    {
+      "name": "runtime/engine.js",
+      "bytes": 808505,
+      "sha256": "383708ed30a732c848105965366afda1745109eacec6c010038621e16a586391"
+    },
+    {
+      "name": "runtime/lexicon-library.js",
+      "bytes": 8868,
+      "sha256": "d0f0998418cda9d49dcfade4f26ba6af0ac1d767215cf6030aa4dafe9eaf919a"
+    },
+    {
+      "name": "runtime/lexicon-manager.js",
+      "bytes": 4360,
+      "sha256": "b952172a9af99bc7dd06986eac2c91fdb0e15f631c65c5fb0b5f0b7fcdaa20c9"
+    },
+    {
+      "name": "runtime/speech.js",
+      "bytes": 4010,
+      "sha256": "f28b0b224ebb5a3cea8b527e2bf1fe2fa2f7065b5ff92a6cb164a89c7d5131a9"
+    },
+    {
+      "name": "runtime/polly.js",
+      "bytes": 4371,
+      "sha256": "77ce745c81dd61394e11779c88d93c19ee8cd8e9adf96224a2a833851d32cc91"
+    },
+    {
+      "name": "runtime/settings-base.js",
+      "bytes": 4269,
+      "sha256": "63d8aebf8a9f3f9ade2852097952a6f70b2bc2a5e6da7f0298d249b5a5fc7d20"
+    },
+    {
+      "name": "vendor/tesseract.min.js",
+      "bytes": 62961,
+      "sha256": "000c27d9cd0def655f77b36c72a389c0ab13793aa31cb4d7aab56d09c0afbc7e"
+    },
+    {
+      "name": "vendor/worker.min.js",
+      "bytes": 111307,
+      "sha256": "576b7df7e3393e137e51849357c9adb53fe7ac1bb69bfa06cf3d61520f182c6d"
+    },
+    {
+      "name": "vendor/tesseract.min.js.LICENSE.txt",
+      "bytes": 149,
+      "sha256": "cdf963ced7d25a0f98901a547647b4d6e2dbe0197fd78c87a059a87b0e542fe2"
+    },
+    {
+      "name": "vendor/worker.min.js.LICENSE.txt",
+      "bytes": 466,
+      "sha256": "45f54171aeaa1d10c0c1a66f374b7bba1f02472b1487fbe892eec04f840002ac"
+    },
+    {
+      "name": "vendor/wasm-feature-detect.js",
+      "bytes": 3621,
+      "sha256": "8b7b26f39778601a2e53320064b3e788ebe3c03799eaa3de9a015ced866e8cc9"
+    },
+    {
+      "name": "vendor/WASM-FEATURE-LICENSE.txt",
+      "bytes": 11341,
+      "sha256": "bcf29b4fd3ec2cb5f9d40a0866da446f6da62170d2ccedf4aeca9cf9406dd20c"
+    },
+    {
+      "name": "vendor/core/tesseract-core-lstm.wasm",
+      "bytes": 2855361,
+      "sha256": "66b17df6e20c5329a17ffa9c202a47eaa3e32500b253d4c7f38e7f2bc01457c3"
+    },
+    {
+      "name": "vendor/core/tesseract-core-lstm.wasm.js",
+      "bytes": 3896484,
+      "sha256": "eef5f8b2f8e20e150680b20adaec4a60babafee3adbe8a94583c81fee46e8680"
+    },
+    {
+      "name": "vendor/core/tesseract-core-relaxedsimd-lstm.wasm",
+      "bytes": 2862266,
+      "sha256": "7985c92d4c64e7267d24cadffe1b2a1da6bf8aa55fdcaf953fe94fe122a24545"
+    },
+    {
+      "name": "vendor/core/tesseract-core-relaxedsimd-lstm.wasm.js",
+      "bytes": 3905767,
+      "sha256": "861a536cf9ef8e63cb644d57bab39c388f37f7d6b6f60024b741c5f6b39a59b3"
+    },
+    {
+      "name": "vendor/core/tesseract-core-simd-lstm.wasm",
+      "bytes": 2857601,
+      "sha256": "34e8d50cac216427d86bf397d610fdd9f49492539bbcdfbfccc4eda20c810bea"
+    },
+    {
+      "name": "vendor/core/tesseract-core-simd-lstm.wasm.js",
+      "bytes": 3899472,
+      "sha256": "c58b46a4c796c0b8afccf77591d5b875b6896b45d402bbce8caa6f5362447b38"
+    },
+    {
+      "name": "vendor/TESSERACT-LICENSE.txt",
+      "bytes": 11357,
+      "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+    },
+    {
+      "name": "vendor/CORE-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "name": "vendor/TESSDATA-LICENSE.txt",
+      "bytes": 10173,
+      "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9"
+    },
+    {
+      "name": "vendor/lang/best/eng.traineddata.gz",
+      "bytes": 12795762,
+      "sha256": "32adc9142df650c15f4795ad6f35fe94693358f880fbf26b78f1b7f512f75a01"
+    },
+    {
+      "name": "vendor/lang/best/mri.traineddata.gz",
+      "bytes": 3214753,
+      "sha256": "d15581834472937c821c613be0d3f1193ac721ee118d7f562c8747d8a3e327d8"
+    },
+    {
+      "name": "vendor/lang/fast/eng.traineddata.gz",
+      "bytes": 1962155,
+      "sha256": "b130d16b69e3888bc099133991a50a5b50e1da0e3ff6ca31a5496fab0fb386c3"
+    },
+    {
+      "name": "vendor/lang/fast/mri.traineddata.gz",
+      "bytes": 547314,
+      "sha256": "919566b7a56df239109ef01dba233efbe51409f8cc4f99464a4fda7a769cc07c"
+    }
+  ]
+}
